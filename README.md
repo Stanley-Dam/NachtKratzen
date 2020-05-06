@@ -1,1 +1,38 @@
 # NachtKratzen
+
+## Project team
+
+Development:
+
+  - [Stanley Dam](https://github.com/Stanley-Dam)
+  - [Kevin Bank](https://github.com/KevinBank)
+  - [Kevin Crans](https://github.com/kevincrans)
+  
+Art:
+
+  - [Daan van Splunter](https://github.com/daanvs27)
+  - [Megan Veldt](https://github.com/MeganVeldt)
+  - [Cadi Boersma](https://github.com/cadilacc)
+
+## Platformen & Libraries
+- [Unity](https://unity.com/)
+- [NodeJS & SocketIO](https://socket.io/)
+- [SocketIO Unity](https://assetstore.unity.com/packages/tools/network/socket-io-for-unity-21721)
+- [JSonDotNet Unity](https://assetstore.unity.com/packages/tools/input-management/json-net-for-unity-11347)
+
+## Game omschrijving
+
+NachtKratzen is een multiplayer hide & seek game gebasseerd op de mythe van de [Nachtkrabb](https://de.wikipedia.org/wiki/Nachtkrabb).
+In dit spel speelt 1 van de spelers als een nachtkrabb, de andere spelers zijn kinderen die zich dus moeten verstoppen voor dit monster.
+Wanneer je als kind word gevonden ben je dus af, als je de nacht overleeft heb je als kind zeinde gewonnen.
+De kinderen mogen ook niet naar de nachtkrabb kijken want dan krijgt hij daar een indicatie van in zijn of haar scherm.
+
+## Scrum
+Tijdens dit project houden wij ons aan de scrum methode, hiervoor hebben wij deze github repo gebruikt en onze trello pagina. We houden ook een logboek bij.
+
+ - [Github](https://github.com/Stanley-Dam/NachtKratzen)
+ - [Trello](https://trello.com/b/bpWVSpGl/project-mythe)
+ - [Logboek]()
+
+## Portfolio
+Dit zijn links naar onze documentatie:
