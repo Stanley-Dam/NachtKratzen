@@ -8,8 +8,8 @@ public abstract class Player : Entity {
     private bool isCrouching;
     private bool isSprinting;
 
-    public void Instantiate(string clientId, bool alive, Vector3 location, bool isMain) {
-        this.Instantiate(clientId, alive, location);
+    public void Instantiate(string clientId, bool alive, bool isMain) {
+        this.Instantiate(clientId, alive);
         this.isMain = isMain;
         this.isCrouching = false;
         this.isSprinting = false;

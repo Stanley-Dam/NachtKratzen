@@ -9,9 +9,9 @@ public class PlayerQuit : PacketHandler, PacketHandlerInterface {
 
     //Player quit event
     public delegate void PlayerQuitEvent(Player player);
-    public event PlayerQuitEvent playerQuitEvent;
+    public static event PlayerQuitEvent playerQuitEvent;
 
-    private string clientId;
+    private Player player;
 
     /// <summary>
     /// Handles the quit packet mainly by removing the corresponding player object from the scene.
@@ -21,12 +21,14 @@ public class PlayerQuit : PacketHandler, PacketHandlerInterface {
     /// <param name="networkManager">The networking manager</param>
     public PlayerQuit(SocketIO.SocketIOEvent e, SocketIO.SocketIOComponent socket, NetworkManager networkManager) 
         : base(e, socket, networkManager) {
-        this.clientId = data["clientId"];
+
+        this.player = networkManager.GetPlayerFromClientId(data["socketId"]);
+        networkManager.RemoveOnlinePlayer(player);
 
         HandlePacket();
     }
 
     public void HandlePacket() {
-        //Call the quit event
+        playerQuitEvent(player);
     }
 }

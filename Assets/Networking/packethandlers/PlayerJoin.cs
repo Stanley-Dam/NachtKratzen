@@ -8,8 +8,8 @@ using UnityEngine;
 public class PlayerJoin : PacketHandler, PacketHandlerInterface {
 
     //Player join event
-    public delegate void PlayerJoinEvent(Player player, Vector3 spawnLocation, Quaternion headRotation, int playerTypeId);
-    public event PlayerJoinEvent playerJoinEvent;
+    public delegate void PlayerJoinEvent(string clientId, Vector3 spawnLocation, Quaternion headRotation, int playerTypeId);
+    public static event PlayerJoinEvent playerJoinEvent;
 
     private float x;
     private float y;
@@ -30,22 +30,28 @@ public class PlayerJoin : PacketHandler, PacketHandlerInterface {
     public PlayerJoin(SocketIO.SocketIOEvent e, SocketIO.SocketIOComponent socket, NetworkManager networkManager) 
         : base(e, socket, networkManager) {
 
-        this.x = PacketUtils.FromPacketString(data["x"]);
-        this.y = PacketUtils.FromPacketString(data["y"]);
-        this.z = PacketUtils.FromPacketString(data["z"]);
+        this.clientId = data["socketId"];
+
+        if (networkManager.GetPlayerFromClientId(this.clientId) != null)
+            return;
+
+        this.x = PacketUtils.FromPacketString(data["spawnLocationX"]);
+        this.y = PacketUtils.FromPacketString(data["spawnLocationY"]);
+        this.z = PacketUtils.FromPacketString(data["spawnLocationZ"]);
 
         this.headRotationX = PacketUtils.FromPacketString(data["headRotationX"]);
         this.headRotationY = PacketUtils.FromPacketString(data["headRotationY"]);
         this.headRotationZ = PacketUtils.FromPacketString(data["headRotationZ"]);
         this.headRotationW = PacketUtils.FromPacketString(data["headRotationW"]);
 
-        this.clientId = data["clientId"];
         this.playerTypeId = int.Parse(data["playerType"]);
 
         HandlePacket();
     }
 
     public void HandlePacket() {
-        //TODO handle join packet by calling the join event
+        Vector3 position = new Vector3(this.x, this.y, this.z);
+        Quaternion headRotation = new Quaternion(this.headRotationX, this.headRotationY, this.headRotationZ, this.headRotationW);
+        playerJoinEvent(this.clientId, position, headRotation, this.playerTypeId);
     }
 }

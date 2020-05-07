@@ -12,11 +12,9 @@ public abstract class Entity : MonoBehaviour {
     /// </summary>
     /// <param name="clientId">The clientId of this player's session.</param>
     /// <param name="alive">Wether this entity is alive or not.</param>
-    /// <param name="location">The location where the entity gets spawned.</param>
-    public void Instantiate(string clientId, bool alive, Vector3 location) {
+    public void Instantiate(string clientId, bool alive) {
         this.clientId = clientId;
         this.alive = alive;
-        this.transform.position = location;
     }
 
     public string ClientId { get { return this.clientId; } }

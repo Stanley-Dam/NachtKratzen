@@ -17,7 +17,7 @@ public abstract class PacketUtils {
 
     public static float FromPacketString(string packetNumber) {
         int integerFromPacket = int.Parse(packetNumber);
-        float number = integerFromPacket / packetFloatToIntMultiplier;
+        float number = (float)integerFromPacket / packetFloatToIntMultiplier;
         return number;
     }
 

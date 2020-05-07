@@ -17,6 +17,8 @@ public class NetworkManager : MonoBehaviour {
         //Connection packets
         socket.On("connect", PlayerJoinServer);
         socket.On("RedirectToServer", Redirect);
+        socket.On("PlayerJoin", OnPlayerJoin);
+        socket.On("PlayerQuit", OnPlayerQuit);
     }
 
     /* Send data to the server. */
@@ -26,6 +28,14 @@ public class NetworkManager : MonoBehaviour {
     }
 
     /* Receive data from the server */
+
+    private void OnPlayerJoin(SocketIO.SocketIOEvent e) {
+        new PlayerJoin(e, socket, this);
+    }
+
+    private void OnPlayerQuit(SocketIO.SocketIOEvent e) {
+        new PlayerQuit(e, socket, this);
+    }
 
     private void Redirect(SocketIO.SocketIOEvent e) {
         string eventAsString = "" + e.data;
@@ -39,15 +49,23 @@ public class NetworkManager : MonoBehaviour {
     /* GETTERS & SETTERS
      */
 
-    public GameObject GetPlayerFromClientId(string clientId) {
-        GameObject foundObject = null;
+    public void AddOnlinePlayer(Player player) {
+        this.entities.Add(player);
+    }
 
-        foreach(Entity entity in entities) {
-            if (entity is Player && entity.ClientId == clientId)
-                return entity.gameObject;
+    public void RemoveOnlinePlayer(Player player) {
+        this.entities.Remove(player);
+    }
+
+    public Player GetPlayerFromClientId(string clientId) {
+        Player foundPlayer = null;
+
+        foreach(Entity entity in this.entities) {
+            if (entity is Player && entity.ClientId.Equals(entity.ClientId))
+                return (Player) entity;
         }
 
-        return foundObject;
+        return foundPlayer;
     }
 
     /* Properties
