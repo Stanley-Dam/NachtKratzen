@@ -10,9 +10,9 @@ Development:
   
 Art:
 
-  - [Daan van Splunter](https://github.com/daanvs27)
-  - [Megan Veldt](https://github.com/MeganVeldt)
-  - [Cadi Boersma](https://github.com/cadilacc)
+  - [Daan van Splunter](https://daanvs.myportfolio.com/)
+  - [Megan Veldt](https://meganveldtgameart.myportfolio.com/)
+  - [Cadi Boersma](https://a26008.myportfolio.com/)
 
 ## Platformen & Libraries
 - [Unity](https://unity.com/)
@@ -32,7 +32,8 @@ Tijdens dit project houden wij ons aan de scrum methode, hiervoor hebben wij dez
 
  - [Github](https://github.com/Stanley-Dam/NachtKratzen)
  - [Trello](https://trello.com/b/bpWVSpGl/project-mythe)
- - [Logboek]()
+ - [Logboek](https://docs.google.com/document/d/1EnuxuT6r19pdeCcQyiE2MD29FkWSL7X-OjyiOtWvSA4/edit?usp=sharing)
 
 ## Portfolio
 Dit zijn links naar onze documentatie:
+ - [Packet protocol](https://docs.google.com/document/d/1Y13P_vc6lDv2jMns_a5W37Y1nRPTUWBA6yy2OJYxqzU/edit?usp=sharing)
