@@ -20,10 +20,10 @@ function PlayerJoinHandler(server, socket) {
 
     //We need to send the new player all the other players! Otherwise he will be alone forever!!
     server.connectedPlayers.forEach(player => {
-        socket.emit('PlayerJoin', player);
+        socket.emit('PlayerJoin', player.GetJoinPacket());
     });
 
-    server.BroadCastToClients('PlayerJoin', newPlayer);
+    server.BroadCastToClients('PlayerJoin', newPlayer.GetJoinPacket());
     console.log(newPlayer.clientId + " Joined the game (Server: " + server.port + ")");
 }
 

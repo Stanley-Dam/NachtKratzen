@@ -34,6 +34,13 @@ class Server {
                 JoinPacketHandler(server, socket, data);
             });
             
+            /* Playerquit & disconnect do the same thing :P
+             */
+
+            socket.on('disconnect', function() {
+                QuitPacketHandler(server, socket);
+            });
+
             socket.on('PlayerQuit', function() {
                 QuitPacketHandler(server, socket);
             });

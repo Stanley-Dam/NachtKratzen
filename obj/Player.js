@@ -1,3 +1,5 @@
+const JoinPacket = require('../packets/JoinPacket.js');
+
 /**
  * This class will be created for every connected player.
  * We can use this data to sync new players and to eventually even make a little anti-cheat :)
@@ -12,6 +14,13 @@ class Player {
         this.headRotationY = headRotationY;
         this.headRotationZ = headRotationZ;
         this.headRotationW = headRotationW;
+    }
+
+    /**
+     * Creates a join packet from the player's current data
+     */
+    GetJoinPacket() {
+        return new JoinPacket(this.clientId, this.x, this.y, this.z, this.headRotationX, this.headRotationY, this.headRotationZ, this.headRotationW, 0);
     }
 }
 
