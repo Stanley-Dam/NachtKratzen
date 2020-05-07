@@ -1,0 +1,1 @@
+//TODO remove the player from the player list and send a packet tho all the connected players
