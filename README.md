@@ -32,8 +32,8 @@ Tijdens dit project houden wij ons aan de scrum methode, hiervoor hebben wij dez
 
  - [Github](https://github.com/Stanley-Dam/NachtKratzen)
  - [Trello](https://trello.com/b/bpWVSpGl/project-mythe)
- - [Logboek]()
+ - [Logboek](https://docs.google.com/document/d/1EnuxuT6r19pdeCcQyiE2MD29FkWSL7X-OjyiOtWvSA4/edit?usp=sharing)
 
 ## Portfolio
 Dit zijn links naar onze documentatie:
- - [Packet protocol](https://docs.google.com/document/d/1Y13P_vc6lDv2jMns_a5W37Y1nRPTUWBA6yy2OJYxqzU/edit)
+ - [Packet protocol](https://docs.google.com/document/d/1Y13P_vc6lDv2jMns_a5W37Y1nRPTUWBA6yy2OJYxqzU/edit?usp=sharing)
