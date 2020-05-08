@@ -19,12 +19,19 @@ public class NetworkManager : MonoBehaviour {
         socket.On("RedirectToServer", Redirect);
         socket.On("PlayerJoin", OnPlayerJoin);
         socket.On("PlayerQuit", OnPlayerQuit);
+        socket.On("PlayerMove", OnPlayerMove);
+
+        PlayerMovement.localPlayerMoveEvent += (destination, headRotation) => PlayerMoveServer(destination, headRotation);
     }
 
     /* Send data to the server. */
     private void PlayerJoinServer(SocketIO.SocketIOEvent e) {
         if (!joined)
             new PlayerJoinBuilder(socket, this);
+    }
+
+    private void PlayerMoveServer(Vector3 destination, Quaternion headRotation) {
+        new MovePlayerBuilder(socket, this, socket.sid, destination, headRotation);
     }
 
     /* Receive data from the server */
@@ -35,6 +42,10 @@ public class NetworkManager : MonoBehaviour {
 
     private void OnPlayerQuit(SocketIO.SocketIOEvent e) {
         new PlayerQuit(e, socket, this);
+    }
+
+    private void OnPlayerMove(SocketIO.SocketIOEvent e) {
+        new MovePlayer(e, socket, this);
     }
 
     private void Redirect(SocketIO.SocketIOEvent e) {
@@ -57,15 +68,17 @@ public class NetworkManager : MonoBehaviour {
         this.entities.Remove(player);
     }
 
-    public Player GetPlayerFromClientId(string clientId) {
-        Player foundPlayer = null;
+    public bool IsMain(string clientId) {
+        return (this.socket.sid.Equals(clientId));
+    }
 
+    public Player GetPlayerFromClientId(string clientId) {
         foreach(Entity entity in this.entities) {
-            if (entity is Player && entity.ClientId.Equals(entity.ClientId))
+            if (entity is Player && clientId.Equals(entity.ClientId))
                 return (Player) entity;
         }
 
-        return foundPlayer;
+        return null;
     }
 
     /* Properties

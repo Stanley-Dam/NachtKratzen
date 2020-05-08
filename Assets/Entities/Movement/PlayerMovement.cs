@@ -9,6 +9,9 @@ public class PlayerMovement : MonoBehaviour {
      * It handles all movement input.
      */
 
+    public delegate void LocalPlayerMoveEvent(Vector3 destination, Quaternion headRotation);
+    public static event LocalPlayerMoveEvent localPlayerMoveEvent;
+
     //Thx to brackeys btw, used his tutorial for the input stuff :P
     private CharacterController character;
     private InputHandler controls;
@@ -68,6 +71,8 @@ public class PlayerMovement : MonoBehaviour {
         }
 
         character.Move(velocity * Time.deltaTime);
+
+        localPlayerMoveEvent(transform.position, this.gameObject.GetComponent<LocalBodyObjects>().head.rotation);
     }
 
     private void Move() {

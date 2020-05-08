@@ -8,7 +8,7 @@ using UnityEngine;
 public class PlayerJoin : PacketHandler, PacketHandlerInterface {
 
     //Player join event
-    public delegate void PlayerJoinEvent(string clientId, Vector3 spawnLocation, Quaternion headRotation, int playerTypeId);
+    public delegate void PlayerJoinEvent(string clientId, Vector3 spawnLocation, Quaternion headRotation, int playerTypeId, bool isMain);
     public static event PlayerJoinEvent playerJoinEvent;
 
     private float x;
@@ -20,6 +20,7 @@ public class PlayerJoin : PacketHandler, PacketHandlerInterface {
     private float headRotationW;
     private string clientId;
     private int playerTypeId;
+    private bool isMain;
 
     /// <summary>
     /// Handles the player join packet, it will spawn a player on the possition given by the server.
@@ -45,6 +46,7 @@ public class PlayerJoin : PacketHandler, PacketHandlerInterface {
         this.headRotationW = PacketUtils.FromPacketString(data["headRotationW"]);
 
         this.playerTypeId = int.Parse(data["playerType"]);
+        this.isMain = networkManager.IsMain(this.clientId);
 
         HandlePacket();
     }
@@ -52,6 +54,6 @@ public class PlayerJoin : PacketHandler, PacketHandlerInterface {
     public void HandlePacket() {
         Vector3 position = new Vector3(this.x, this.y, this.z);
         Quaternion headRotation = new Quaternion(this.headRotationX, this.headRotationY, this.headRotationZ, this.headRotationW);
-        playerJoinEvent(this.clientId, position, headRotation, this.playerTypeId);
+        playerJoinEvent(this.clientId, position, headRotation, this.playerTypeId, this.isMain);
     }
 }

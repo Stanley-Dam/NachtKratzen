@@ -14,8 +14,8 @@ public class MouseLook : MonoBehaviour {
     private float xRotation = 0f;
     private InputHandler controls;
 
-    [SerializeField] private Transform playerBody;
-    [SerializeField] private Transform playerHead;
+    public Transform playerBody;
+    public Transform playerHead;
 
     private void Awake() {
         controls = new InputHandler();
