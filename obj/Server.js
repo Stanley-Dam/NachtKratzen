@@ -66,6 +66,14 @@ class Server {
         this.io.close();
     }
 
+    GetPlayerById(clientId) {
+
+        for(var i = 0; i < this.connectedPlayers.length; i++) {
+            if(this.connectedPlayers[i].clientId == clientId)
+                return this.connectedPlayers[i];
+        }
+    }
+
     /**
      * Broadcasts this packet to all the connected clients, this packet will have to be compatible with the Packet-protocol
      * https://docs.google.com/document/d/1Y13P_vc6lDv2jMns_a5W37Y1nRPTUWBA6yy2OJYxqzU/edit?usp=sharing
