@@ -8,6 +8,6 @@ public class TimeSunScript : MonoBehaviour
     TimeScript timeScript;
     void Update()
     {
-        transform.rotation = Quaternion.Euler(360f / 86400f * timeScript.GetTime(), 0,0);
+        transform.rotation = Quaternion.Euler(360f / 86400f * timeScript.GetTime() - 90, 0,0);
     }
 }
