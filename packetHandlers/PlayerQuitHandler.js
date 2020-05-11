@@ -6,13 +6,8 @@ const QuitPacket = require('../packets/QuitPacket.js');
  * @param {The socket received} socket 
  */
 function PlayerQuitHandler(server, socket) {
-    var index = 0;
-    server.connectedPlayers.forEach(player => {
-        if(player.clientId == socket.id) {
-            server.connectedPlayers.splice(index);
-        }
-        index++;
-    });
+    var index = server.connectedPlayers.indexOf(server.GetPlayerById(socket.id));
+    server.connectedPlayers.splice(index, 1);
 
     var dataObject = new QuitPacket(socket.id);
             

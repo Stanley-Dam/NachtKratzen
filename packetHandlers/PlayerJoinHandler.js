@@ -16,13 +16,13 @@ function PlayerJoinHandler(server, socket) {
     var spawnPoint = JSON.parse(content);
 
     var newPlayer = new Player(socket.id, spawnPoint.x, spawnPoint.y, spawnPoint.z, spawnPoint.headRotationX, spawnPoint.headRotationY, spawnPoint.headRotationZ, spawnPoint.headRotationW);
-    server.connectedPlayers.push(newPlayer);
 
     //We need to send the new player all the other players! Otherwise he will be alone forever!!
     server.connectedPlayers.forEach(player => {
         socket.emit('PlayerJoin', player.GetJoinPacket());
     });
 
+    server.connectedPlayers.push(newPlayer);
     server.BroadCastToClients('PlayerJoin', newPlayer.GetJoinPacket());
     console.log(newPlayer.clientId + " Joined the game (Server: " + server.port + ")");
 }

@@ -67,7 +67,6 @@ class Server {
     }
 
     GetPlayerById(clientId) {
-
         for(var i = 0; i < this.connectedPlayers.length; i++) {
             if(this.connectedPlayers[i].clientId == clientId)
                 return this.connectedPlayers[i];
