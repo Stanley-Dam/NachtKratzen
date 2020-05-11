@@ -14,7 +14,11 @@ GameObject:
   - component: {fileID: 7681230605907435833}
   - component: {fileID: 7681230605907435834}
   - component: {fileID: 5347175294015443301}
+<<<<<<< Updated upstream
   m_Layer: 0
+=======
+  m_Layer: 8
+>>>>>>> Stashed changes
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,6 +91,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce43eb85c36e8574ea4ccb7f2be79afe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  localBodyObjects: {fileID: 5347175294015443301}
   playerAudio: {fileID: 7681230605907435834}
   groundCheck: {fileID: 7681230607207895000}
   groundDistance: 0.4
@@ -137,7 +142,7 @@ GameObject:
   - component: {fileID: 7681230606103977775}
   - component: {fileID: 7681230606103977809}
   - component: {fileID: 7681230606103977808}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: nose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -230,7 +235,7 @@ GameObject:
   - component: {fileID: 7681230606308654150}
   - component: {fileID: 7681230606308654151}
   - component: {fileID: 7681230606308654152}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: right_eye
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -323,7 +328,7 @@ GameObject:
   - component: {fileID: 7681230606449986820}
   - component: {fileID: 7681230606449986821}
   - component: {fileID: 7681230606449986822}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: left_eye
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -416,7 +421,7 @@ GameObject:
   - component: {fileID: 7681230606663738633}
   - component: {fileID: 7681230606663738632}
   - component: {fileID: 7681230606663738634}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -509,7 +514,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7681230606924008375}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CameraHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -542,7 +547,7 @@ GameObject:
   - component: {fileID: 7681230606950321963}
   - component: {fileID: 7681230606950321965}
   - component: {fileID: 7681230606950321964}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -632,7 +637,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7681230607207895000}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -663,7 +668,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7681230607439031759}
   - component: {fileID: 7681230607439031758}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Audio Source
   m_TagString: Untagged
   m_Icon: {fileID: 0}
