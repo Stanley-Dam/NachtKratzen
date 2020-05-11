@@ -12,11 +12,8 @@ public class PlayerMovement : MonoBehaviour {
     public delegate void LocalPlayerMoveEvent(Vector3 destination, Quaternion headRotation);
     public static event LocalPlayerMoveEvent localPlayerMoveEvent;
 
-<<<<<<< Updated upstream
-=======
     [SerializeField] private LocalBodyObjects localBodyObjects;
 
->>>>>>> Stashed changes
     //Thx to brackeys btw, used his tutorial for the input stuff :P
     private CharacterController character;
     private InputHandler controls;
@@ -77,11 +74,7 @@ public class PlayerMovement : MonoBehaviour {
 
         character.Move(velocity * Time.deltaTime);
 
-<<<<<<< Updated upstream
-        localPlayerMoveEvent(transform.position, this.gameObject.GetComponent<LocalBodyObjects>().head.rotation);
-=======
         localPlayerMoveEvent(transform.position, localBodyObjects.head.rotation);
->>>>>>> Stashed changes
     }
 
     private void Move() {
