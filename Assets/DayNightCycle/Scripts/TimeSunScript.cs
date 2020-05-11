@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SunScript : MonoBehaviour
+public class TimeSunScript : MonoBehaviour
 {
     [SerializeField]
     TimeScript timeScript;
