@@ -9,7 +9,7 @@ class PlayerDeath : PacketHandler, PacketHandlerInterface {
 
     //Player death event
     public delegate void PlayerDeathEvent(Player player);
-    public event PlayerDeathEvent playerDeathEvent;
+    public static event PlayerDeathEvent playerDeathEvent;
 
     private string clientId;
 
@@ -28,6 +28,6 @@ class PlayerDeath : PacketHandler, PacketHandlerInterface {
     }
 
     public void HandlePacket() {
-        //TODO call the player death event here :)
+        playerDeathEvent(networkManager.GetPlayerFromClientId(this.clientId));
     }
 }

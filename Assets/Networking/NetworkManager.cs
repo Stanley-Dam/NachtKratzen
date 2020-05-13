@@ -22,11 +22,16 @@ public class NetworkManager : MonoBehaviour {
         socket.On("PlayerMove", OnPlayerMove);
         socket.On("PlayerTeleport", OnPlayerTeleport);
         socket.On("UpdateSeeker", OnSeekerUpdate);
+        socket.On("PlayerDeath", OnPlayerDeath);
 
         PlayerMovement.localPlayerMoveEvent += (destination, headRotation) => PlayerMoveServer(destination, headRotation);
     }
 
     /* Send data to the server. */
+    public void KillPlayer(string clientId) {
+        new PlayerKillBuilder(this.socket, this, clientId);
+    }
+
     private void PlayerJoinServer(SocketIO.SocketIOEvent e) {
         if (!joined)
             new PlayerJoinBuilder(socket, this);
@@ -56,6 +61,10 @@ public class NetworkManager : MonoBehaviour {
 
     private void OnSeekerUpdate(SocketIO.SocketIOEvent e) {
         new UpdateSeeker(e, socket, this);
+    }
+
+    private void OnPlayerDeath(SocketIO.SocketIOEvent e) {
+        new PlayerDeath(e, socket, this);
     }
 
     private void Redirect(SocketIO.SocketIOEvent e) {

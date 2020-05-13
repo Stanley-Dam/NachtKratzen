@@ -5,7 +5,7 @@ using UnityEngine;
 public class Seeker : Player {
 
     private void Awake() {
-        //TODO listen to pickup event
+        RaycastPickup.foundPlayerEvent += playerGameObject => this.networkManager.KillPlayer(playerGameObject.GetComponent<Player>().ClientId);
     }
 
 }

@@ -7,8 +7,8 @@ public abstract class Player : Entity {
     private bool isMain;
     private LocalBodyObjects localBodyObjects;
 
-    public void Instantiate(string clientId, bool alive, bool isMain) {
-        this.Instantiate(clientId, alive);
+    public void Instantiate(string clientId, NetworkManager networkManager, bool alive, bool isMain) {
+        this.Instantiate(clientId, networkManager, alive);
         this.localBodyObjects = gameObject.GetComponent<LocalBodyObjects>();
         this.isMain = isMain;
 
