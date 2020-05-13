@@ -1,6 +1,10 @@
+const GameLoop = require('./GameLoop.js');
+
 const JoinPacketHandler = require('../packetHandlers/PlayerJoinHandler.js');
 const QuitPacketHandler = require('../packetHandlers/PlayerQuitHandler.js');
 const MovePacketHandler = require('../packetHandlers/PlayerMoveHandler.js');
+
+const ServerClose = require('../packets/ServerClose.js');
 
 /**
  * This is a "playable-server", these get created by the proxy.
@@ -15,7 +19,10 @@ class Server {
         this.connectedPlayers = [];
         this.port = port;
 
+        this.isEnabled = true;
         this.gameStarted = false;
+        this.seeker = null;
+        this.hiders = [];
 
         this.io = require('socket.io')({
             transports: ['websocket'],
@@ -30,10 +37,15 @@ class Server {
 
     ServerLoop(server) {
         this.io.on('connection', function(socket) {
+
             socket.on('PlayerJoin', (data) => {
                 JoinPacketHandler(server, socket, data);
             });
-            
+
+            socket.on('PlayerMove', function(data) {
+                MovePacketHandler(server, data);
+            });
+
             /* Playerquit & disconnect do the same thing :P
              */
 
@@ -45,10 +57,14 @@ class Server {
                 QuitPacketHandler(server, socket);
             });
 
-            socket.on('PlayerMove', function(data) {
-                MovePacketHandler(server, data);
-            });
         });
+    }
+
+    /**
+     * Has to be called when the first player joins.
+     */
+    StartGameLoop() {
+        this.gameloop = new GameLoop(this);
     }
 
     /**
@@ -61,9 +77,12 @@ class Server {
 
     /**
      * Stops this server.
+     * !!Has to be called from the proxy (proxy.DestroyServer(<server>);)!!
      */
-    Stop() {
+    Stop(reason) {
+        this.BroadCastToClients('ServerClose', new ServerClose(reason));
         this.io.close();
+        this.isEnabled = false;
     }
 
     GetPlayerById(clientId) {

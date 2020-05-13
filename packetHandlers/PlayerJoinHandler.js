@@ -1,5 +1,5 @@
 const Player = require('../obj/Player.js');
-const fs = require('fs')
+const fs = require('fs');
 
 /**
  * Handles join packets.
@@ -12,7 +12,7 @@ const fs = require('fs')
  * @param {The socket received by the server} socket 
  */
 function PlayerJoinHandler(server, socket) {
-    var content = fs.readFileSync('./data/SpawnLocation.json');
+    var content = fs.readFileSync('./data/LobbyLocation.json');
     var spawnPoint = JSON.parse(content);
 
     var newPlayer = new Player(socket.id, spawnPoint.x, spawnPoint.y, spawnPoint.z, spawnPoint.headRotationX, spawnPoint.headRotationY, spawnPoint.headRotationZ, spawnPoint.headRotationW);
@@ -21,6 +21,10 @@ function PlayerJoinHandler(server, socket) {
     server.connectedPlayers.forEach(player => {
         socket.emit('PlayerJoin', player.GetJoinPacket());
     });
+
+    //When the player is the first one in the server
+    if(server.connectedPlayers.length <= 0)
+        server.StartGameLoop();
 
     server.connectedPlayers.push(newPlayer);
     server.BroadCastToClients('PlayerJoin', newPlayer.GetJoinPacket());

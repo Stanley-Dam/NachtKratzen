@@ -1,0 +1,8 @@
+{
+    "PLAYER_LEFT_SERVER_CANCELED" : "Canceled, not enough players.",
+    "SECONDS_LEFT" : " seconds left.",
+    "GAME_STARTING" : "The game has started!",
+    "SEEKER_RELEASED" : "The seeker has been released, good luck!",
+    "HIDERS_WIN" : "The hiders have won the game!",
+    "SEEKER_WINS" : "The seeker was victorious!"
+}

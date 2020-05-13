@@ -55,7 +55,7 @@ class Proxy {
         }); 
     }
 
-    DestroyServer(server) {
+    DestroyServer(server, reason) {
         var index = 0;
         this.servers.forEach(currentServer => {
             if(currentServer == server) {
@@ -65,7 +65,7 @@ class Proxy {
             index++;
         });
 
-        server.Stop();
+        server.Stop(reason);
     }
 }
 
