@@ -8,6 +8,7 @@ const spawnPoint = JSON.parse(spawnLocationFile);
 
 const PlayerMessage = require('../packets/PlayerMessage.js');
 const PlayerTeleport = require('../packets/PlayerTeleport.js');
+const UpdateSeeker = require('../packets/UpdateSeeker.js');
 
 const Stages = require('../data/Stages.js');
 const MessageTypes = require('../data/MessageTypes.js');
@@ -177,6 +178,7 @@ class GameLoop {
     PickSeeker() {
         var pickedIndex = Math.floor(Math.random() * this.server.connectedPlayers.length);
         this.server.seeker = this.server.connectedPlayers[pickedIndex];
+        this.server.BroadCastToClients('UpdateSeeker', new UpdateSeeker(this.server.seeker.clientId));
 
         //Setting up the hider array
         server.connectedPlayers.forEach(player => {
