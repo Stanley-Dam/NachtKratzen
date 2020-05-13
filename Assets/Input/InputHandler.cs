@@ -168,6 +168,33 @@ public class @InputHandler : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""pickup"",
+            ""id"": ""7e7940ff-4c05-41a9-b17a-724596ddd8b8"",
+            ""actions"": [
+                {
+                    ""name"": ""interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""59c4292f-71af-43f2-bc7f-2a4749d4d370"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""3ea5ea41-9218-40a8-8690-f3fa738d0a4e"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -181,6 +208,9 @@ public class @InputHandler : IInputActionCollection, IDisposable
         // interact
         m_interact = asset.FindActionMap("interact", throwIfNotFound: true);
         m_interact_Click = m_interact.FindAction("Click", throwIfNotFound: true);
+        // pickup
+        m_pickup = asset.FindActionMap("pickup", throwIfNotFound: true);
+        m_pickup_interact = m_pickup.FindAction("interact", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -316,6 +346,39 @@ public class @InputHandler : IInputActionCollection, IDisposable
         }
     }
     public InteractActions @interact => new InteractActions(this);
+
+    // pickup
+    private readonly InputActionMap m_pickup;
+    private IPickupActions m_PickupActionsCallbackInterface;
+    private readonly InputAction m_pickup_interact;
+    public struct PickupActions
+    {
+        private @InputHandler m_Wrapper;
+        public PickupActions(@InputHandler wrapper) { m_Wrapper = wrapper; }
+        public InputAction @interact => m_Wrapper.m_pickup_interact;
+        public InputActionMap Get() { return m_Wrapper.m_pickup; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(PickupActions set) { return set.Get(); }
+        public void SetCallbacks(IPickupActions instance)
+        {
+            if (m_Wrapper.m_PickupActionsCallbackInterface != null)
+            {
+                @interact.started -= m_Wrapper.m_PickupActionsCallbackInterface.OnInteract;
+                @interact.performed -= m_Wrapper.m_PickupActionsCallbackInterface.OnInteract;
+                @interact.canceled -= m_Wrapper.m_PickupActionsCallbackInterface.OnInteract;
+            }
+            m_Wrapper.m_PickupActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @interact.started += instance.OnInteract;
+                @interact.performed += instance.OnInteract;
+                @interact.canceled += instance.OnInteract;
+            }
+        }
+    }
+    public PickupActions @pickup => new PickupActions(this);
     public interface IMovementActions
     {
         void OnMove(InputAction.CallbackContext context);
@@ -326,5 +389,9 @@ public class @InputHandler : IInputActionCollection, IDisposable
     public interface IInteractActions
     {
         void OnClick(InputAction.CallbackContext context);
+    }
+    public interface IPickupActions
+    {
+        void OnInteract(InputAction.CallbackContext context);
     }
 }
