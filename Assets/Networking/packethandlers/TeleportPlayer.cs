@@ -7,7 +7,7 @@ using UnityEngine;
 
 class TeleportPlayer : PacketHandler, PacketHandlerInterface {
 
-    //Player move event
+    //Player teleport event
     public delegate void PlayerTeleportEvent(Player player, Vector3 destination, Quaternion headRotation);
     public static event PlayerTeleportEvent playerTeleportEvent;
 
