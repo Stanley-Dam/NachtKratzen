@@ -200,6 +200,7 @@ GameObject:
   - component: {fileID: 7681230605907435833}
   - component: {fileID: 7681230605907435834}
   - component: {fileID: 5347175294015443301}
+  - component: {fileID: 5303485418166594957}
   m_Layer: 8
   m_Name: NachtKrabb
   m_TagString: Untagged
@@ -312,6 +313,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   head: {fileID: 7681230606663738635}
   cameraHolder: {fileID: 7681230606924008375}
+--- !u!114 &5303485418166594957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7681230605907435837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3288f295cdd5eef49820fb5469636206, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  range: 2.5
+  isHoldingSomething: 0
 --- !u!1 &7681230606103977810
 GameObject:
   m_ObjectHideFlags: 0
@@ -603,6 +618,7 @@ GameObject:
   - component: {fileID: 7681230606663738633}
   - component: {fileID: 7681230606663738632}
   - component: {fileID: 7681230606663738634}
+  - component: {fileID: 7710917217370243318}
   m_Layer: 8
   m_Name: head
   m_TagString: Untagged
@@ -687,6 +703,18 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7710917217370243318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7681230606663738636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba5027e0580088e43807d64e22f21611, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7681230606924008376
 GameObject:
   m_ObjectHideFlags: 0
