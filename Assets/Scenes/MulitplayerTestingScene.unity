@@ -335,7 +335,7 @@ MonoBehaviour:
   networkManager: {fileID: 401082506}
   playerPrefab: {fileID: 7681230605907435837, guid: deb5a840d8943954a8344f8d82ee630f,
     type: 3}
-  seekerPrefab: {fileID: 7681230605907435837, guid: deb5a840d8943954a8344f8d82ee630f,
+  seekerPrefab: {fileID: 7681230605907435837, guid: 730655adca9cb044b9dcb920e00711eb,
     type: 3}
   camera: {fileID: 963194227}
   mainPlayerLayer: 9

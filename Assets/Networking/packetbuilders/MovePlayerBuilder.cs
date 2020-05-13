@@ -8,6 +8,14 @@ using UnityEngine;
 
 class MovePlayerBuilder : PacketBuilder {
 
+    /// <summary>
+    /// We send this packet every time the main player moves.
+    /// </summary>
+    /// <param name="socket">The socket</param>
+    /// <param name="networkManager">The networkmanager</param>
+    /// <param name="socketId">The socketId of the moving player</param>
+    /// <param name="posTo">The position where the player is moving to</param>
+    /// <param name="rotation">The head-rotation of the player</param>
     public MovePlayerBuilder(SocketIO.SocketIOComponent socket, NetworkManager networkManager,
         string socketId, Vector3 posTo, Quaternion rotation) :
         base(socket, networkManager, "PlayerMove") {

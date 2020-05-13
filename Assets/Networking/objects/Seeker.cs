@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Seeker : Player {
 
-    //TODO add hider only stuff :P
+    private void Awake() {
+        //TODO listen to pickup event
+    }
 
 }
