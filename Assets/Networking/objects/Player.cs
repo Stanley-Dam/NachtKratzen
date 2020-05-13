@@ -21,6 +21,11 @@ public abstract class Player : Entity {
                     Move(destination, headRotation);
             };
         }
+
+        TeleportPlayer.playerTeleportEvent += (player, destination, headRotation) => {
+            if (this == player)
+                Move(destination, headRotation);
+        };
     }
 
     public bool IsMainPlayer { get { return this.isMain; } }

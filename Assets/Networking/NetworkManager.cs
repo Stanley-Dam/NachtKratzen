@@ -20,6 +20,7 @@ public class NetworkManager : MonoBehaviour {
         socket.On("PlayerJoin", OnPlayerJoin);
         socket.On("PlayerQuit", OnPlayerQuit);
         socket.On("PlayerMove", OnPlayerMove);
+        socket.On("PlayerTeleport", OnPlayerTeleport);
 
         PlayerMovement.localPlayerMoveEvent += (destination, headRotation) => PlayerMoveServer(destination, headRotation);
     }
@@ -46,6 +47,10 @@ public class NetworkManager : MonoBehaviour {
 
     private void OnPlayerMove(SocketIO.SocketIOEvent e) {
         new MovePlayer(e, socket, this);
+    }
+
+    private void OnPlayerTeleport(SocketIO.SocketIOEvent e) {
+        new TeleportPlayer(e, socket, this);
     }
 
     private void Redirect(SocketIO.SocketIOEvent e) {
