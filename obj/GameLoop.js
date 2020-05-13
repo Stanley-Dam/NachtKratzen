@@ -53,19 +53,22 @@ class GameLoop {
     Update(deltaTime) {
         this.clock += deltaTime;
 
+        var onlinePlayers = this.CheckForPlayersOnline();
+
         /**
          * @see https://docs.google.com/document/d/1B37fRN4JlXPEVjBk-zfjm9Jxi7HfkaBcQ8tgQnmvBxM/edit
          * for more information about the different game stages and the timings between them.
          */
         switch(this.gameStage) {
             case Stages.WAITING_FOR_PLAYERS:
-                if(this.CheckForPlayersOnline() > 3) {
+                this.PickSeeker();
+                if(onlinePlayers >= 3) {
                     this.gameStage = Stages.STARTING;
                     this.clock = 0;
                 }
                 break;
             case Stages.STARTING:
-                if(this.CheckForPlayersOnline() < 3) {
+                if(onlinePlayers < 3) {
                     this.clock = 0;
                     this.gameStage = Stages.WAITING_FOR_PLAYERS;
                     //Let's also give the players a heads up :)
@@ -181,7 +184,7 @@ class GameLoop {
         this.server.BroadCastToClients('UpdateSeeker', new UpdateSeeker(this.server.seeker.clientId));
 
         //Setting up the hider array
-        server.connectedPlayers.forEach(player => {
+        this.server.connectedPlayers.forEach(player => {
             if(player != this.server.seeker)
                 this.server.hiders.push(player);
         });

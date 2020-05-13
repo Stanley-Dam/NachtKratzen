@@ -5,6 +5,8 @@ class PlayerMessage {
     constructor(messageType, message) {
         this.messageType = messageType;
         this.message = message;
+
+        console.log(message);
     }
 }
 
