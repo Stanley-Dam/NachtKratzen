@@ -25,6 +25,7 @@ public class RaycastPickup : MonoBehaviour
     {
         controls = new InputHandler();
         controls.pickup.interact.performed += ctx => pickUp();
+        if(Camera.main != null)
         cameraPos = Camera.main.transform;
     }
 
