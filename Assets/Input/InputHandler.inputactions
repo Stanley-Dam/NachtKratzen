@@ -155,6 +155,33 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "pickup",
+            "id": "7e7940ff-4c05-41a9-b17a-724596ddd8b8",
+            "actions": [
+                {
+                    "name": "interact",
+                    "type": "Button",
+                    "id": "59c4292f-71af-43f2-bc7f-2a4749d4d370",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "3ea5ea41-9218-40a8-8690-f3fa738d0a4e",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []
