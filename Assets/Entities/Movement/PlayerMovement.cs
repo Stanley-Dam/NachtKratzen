@@ -74,6 +74,7 @@ public class PlayerMovement : MonoBehaviour {
 
         character.Move(velocity * Time.deltaTime);
 
+        if(localPlayerMoveEvent != null)
         localPlayerMoveEvent(transform.position, localBodyObjects.head.rotation);
     }
 
