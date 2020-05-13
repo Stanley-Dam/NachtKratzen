@@ -4,15 +4,20 @@ using UnityEngine;
 
 public class IsRenderingScript : MonoBehaviour
 {
-    private GameObject test;
+    public delegate void IsVisibleEvent(bool isNachtKrabVisible);
+    public static event IsVisibleEvent isVisibleEvent;
+
+    private bool isVisible;
 
     private void OnBecameVisible()
     {
-        print("I am visible");
+        isVisible = true;
+        isVisibleEvent(isVisible);
     }
 
     private void OnBecameInvisible()
     {
-        print("I am invisible");
+        isVisible = false;
+        isVisibleEvent(isVisible);
     }
 }

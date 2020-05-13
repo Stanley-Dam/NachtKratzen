@@ -15,8 +15,8 @@ public class RaycastPickup : MonoBehaviour
 
     private Transform cameraPos;
 
-    [SerializeField]
-    private LineRenderer rayLine;
+    //[SerializeField]
+    //private LineRenderer rayLine;
 
     [SerializeField]
     private bool isHoldingSomething;
@@ -31,7 +31,7 @@ public class RaycastPickup : MonoBehaviour
 
     private void Start()
     {
-        rayLine = GetComponent<LineRenderer>();
+        //rayLine = GetComponent<LineRenderer>();
     }
 
     private void pickUp()
@@ -40,11 +40,11 @@ public class RaycastPickup : MonoBehaviour
         {
             RaycastHit hit;
 
-            rayLine.SetPosition(0, cameraPos.position);
+            //rayLine.SetPosition(0, cameraPos.position);
 
             if (Physics.Raycast(cameraPos.position, cameraPos.forward, out hit, range))
             {
-                rayLine.SetPosition(1, hit.point);
+                //rayLine.SetPosition(1, hit.point);
                 //when ray collides with an gameobject it moves all parents and children as the grabby hand children
                 //call found player event
                 if (foundPlayerEvent != null)
@@ -52,7 +52,7 @@ public class RaycastPickup : MonoBehaviour
             }
             else
             {
-                rayLine.SetPosition(1, cameraPos.position + (cameraPos.transform.forward * range));
+                //rayLine.SetPosition(1, cameraPos.position + (cameraPos.transform.forward * range));
             }
 
             //print("I am picking "+ hit +" up");
