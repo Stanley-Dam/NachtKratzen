@@ -40,6 +40,11 @@ public abstract class Player : Entity {
         this.localBodyObjects.head.rotation = headRotation;
     }
 
+    /// <summary>
+    /// This method can only be called by the server, it will teleport the given player to the given destination.
+    /// </summary>
+    /// <param name="destination">The location we're teleporting the player towards.</param>
+    /// <param name="headRotation">The headrotation of the player</param>
     private void Teleport(Vector3 destination, Quaternion headRotation) {
         CharacterController character = this.GetComponent<CharacterController>();
         character.enabled = false;

@@ -12,12 +12,14 @@ public class IsRenderingScript : MonoBehaviour
     private void OnBecameVisible()
     {
         isVisible = true;
-        isVisibleEvent(isVisible);
+        if(isVisibleEvent != null)
+            isVisibleEvent(isVisible);
     }
 
     private void OnBecameInvisible()
     {
         isVisible = false;
-        isVisibleEvent(isVisible);
+        if(isVisibleEvent != null)
+            isVisibleEvent(isVisible);
     }
 }

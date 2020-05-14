@@ -2,21 +2,24 @@
 using Newtonsoft.Json;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NetworkManager : MonoBehaviour {
 
     [SerializeField] private SocketIO.SocketIOComponent socket;
 
+    public Player seeker;
     private List<Entity> entities = new List<Entity>();
     private bool joined = false;
 
     // Start is called before the first frame update
-    void Start() {
+    private void Start() {
         //Start listening to all the server events
 
         //Connection packets
         socket.On("connect", PlayerJoinServer);
         socket.On("RedirectToServer", Redirect);
+        socket.On("ServerClose", ServerClosed);
         socket.On("PlayerJoin", OnPlayerJoin);
         socket.On("PlayerQuit", OnPlayerQuit);
         socket.On("PlayerMove", OnPlayerMove);
@@ -24,7 +27,11 @@ public class NetworkManager : MonoBehaviour {
         socket.On("UpdateSeeker", OnSeekerUpdate);
         socket.On("PlayerDeath", OnPlayerDeath);
 
-        PlayerMovement.localPlayerMoveEvent += (destination, headRotation) => PlayerMoveServer(destination, headRotation);
+        PlayerMovement.localPlayerMoveEvent += PlayerMoveServer;
+    }
+
+    private void OnDisable() {
+        PlayerMovement.localPlayerMoveEvent -= PlayerMoveServer;
     }
 
     /* Send data to the server. */
@@ -65,6 +72,12 @@ public class NetworkManager : MonoBehaviour {
 
     private void OnPlayerDeath(SocketIO.SocketIOEvent e) {
         new PlayerDeath(e, socket, this);
+    }
+
+    private void ServerClosed(SocketIO.SocketIOEvent e) {
+        //This is very temporary ofcourse, just to start a new game real quick :P
+        socket.Close();
+        SceneManager.LoadScene(0, LoadSceneMode.Single);
     }
 
     private void Redirect(SocketIO.SocketIOEvent e) {

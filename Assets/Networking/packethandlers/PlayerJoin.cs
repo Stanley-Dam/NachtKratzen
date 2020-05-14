@@ -33,9 +33,6 @@ public class PlayerJoin : PacketHandler, PacketHandlerInterface {
 
         this.clientId = data["socketId"];
 
-        if (networkManager.GetPlayerFromClientId(this.clientId) != null)
-            return;
-
         this.x = PacketUtils.FromPacketString(data["spawnLocationX"]);
         this.y = PacketUtils.FromPacketString(data["spawnLocationY"]);
         this.z = PacketUtils.FromPacketString(data["spawnLocationZ"]);

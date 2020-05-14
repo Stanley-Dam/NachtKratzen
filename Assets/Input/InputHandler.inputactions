@@ -130,38 +130,11 @@
             ]
         },
         {
-            "name": "interact",
-            "id": "4122859a-bdf9-472f-9e81-c97a55b8c3e2",
-            "actions": [
-                {
-                    "name": "Click",
-                    "type": "Button",
-                    "id": "e9997078-e1cb-4c8d-9e0d-22e03fe102da",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": ""
-                }
-            ],
-            "bindings": [
-                {
-                    "name": "",
-                    "id": "b2db2b81-c8ae-4893-805d-e7f9817c270d",
-                    "path": "<Mouse>/clickCount",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Click",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                }
-            ]
-        },
-        {
             "name": "pickup",
             "id": "7e7940ff-4c05-41a9-b17a-724596ddd8b8",
             "actions": [
                 {
-                    "name": "interact",
+                    "name": "Click",
                     "type": "Button",
                     "id": "59c4292f-71af-43f2-bc7f-2a4749d4d370",
                     "expectedControlType": "Button",
@@ -177,7 +150,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "interact",
+                    "action": "Click",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

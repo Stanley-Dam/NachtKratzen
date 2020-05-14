@@ -143,38 +143,11 @@ public class @InputHandler : IInputActionCollection, IDisposable
             ]
         },
         {
-            ""name"": ""interact"",
-            ""id"": ""4122859a-bdf9-472f-9e81-c97a55b8c3e2"",
-            ""actions"": [
-                {
-                    ""name"": ""Click"",
-                    ""type"": ""Button"",
-                    ""id"": ""e9997078-e1cb-4c8d-9e0d-22e03fe102da"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """"
-                }
-            ],
-            ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""b2db2b81-c8ae-4893-805d-e7f9817c270d"",
-                    ""path"": ""<Mouse>/clickCount"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Click"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                }
-            ]
-        },
-        {
             ""name"": ""pickup"",
             ""id"": ""7e7940ff-4c05-41a9-b17a-724596ddd8b8"",
             ""actions"": [
                 {
-                    ""name"": ""interact"",
+                    ""name"": ""Click"",
                     ""type"": ""Button"",
                     ""id"": ""59c4292f-71af-43f2-bc7f-2a4749d4d370"",
                     ""expectedControlType"": ""Button"",
@@ -190,7 +163,7 @@ public class @InputHandler : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""interact"",
+                    ""action"": ""Click"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -205,12 +178,9 @@ public class @InputHandler : IInputActionCollection, IDisposable
         m_movement_Sprint = m_movement.FindAction("Sprint", throwIfNotFound: true);
         m_movement_Jump = m_movement.FindAction("Jump", throwIfNotFound: true);
         m_movement_MouseLook = m_movement.FindAction("MouseLook", throwIfNotFound: true);
-        // interact
-        m_interact = asset.FindActionMap("interact", throwIfNotFound: true);
-        m_interact_Click = m_interact.FindAction("Click", throwIfNotFound: true);
         // pickup
         m_pickup = asset.FindActionMap("pickup", throwIfNotFound: true);
-        m_pickup_interact = m_pickup.FindAction("interact", throwIfNotFound: true);
+        m_pickup_Click = m_pickup.FindAction("Click", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -314,48 +284,15 @@ public class @InputHandler : IInputActionCollection, IDisposable
     }
     public MovementActions @movement => new MovementActions(this);
 
-    // interact
-    private readonly InputActionMap m_interact;
-    private IInteractActions m_InteractActionsCallbackInterface;
-    private readonly InputAction m_interact_Click;
-    public struct InteractActions
-    {
-        private @InputHandler m_Wrapper;
-        public InteractActions(@InputHandler wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Click => m_Wrapper.m_interact_Click;
-        public InputActionMap Get() { return m_Wrapper.m_interact; }
-        public void Enable() { Get().Enable(); }
-        public void Disable() { Get().Disable(); }
-        public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(InteractActions set) { return set.Get(); }
-        public void SetCallbacks(IInteractActions instance)
-        {
-            if (m_Wrapper.m_InteractActionsCallbackInterface != null)
-            {
-                @Click.started -= m_Wrapper.m_InteractActionsCallbackInterface.OnClick;
-                @Click.performed -= m_Wrapper.m_InteractActionsCallbackInterface.OnClick;
-                @Click.canceled -= m_Wrapper.m_InteractActionsCallbackInterface.OnClick;
-            }
-            m_Wrapper.m_InteractActionsCallbackInterface = instance;
-            if (instance != null)
-            {
-                @Click.started += instance.OnClick;
-                @Click.performed += instance.OnClick;
-                @Click.canceled += instance.OnClick;
-            }
-        }
-    }
-    public InteractActions @interact => new InteractActions(this);
-
     // pickup
     private readonly InputActionMap m_pickup;
     private IPickupActions m_PickupActionsCallbackInterface;
-    private readonly InputAction m_pickup_interact;
+    private readonly InputAction m_pickup_Click;
     public struct PickupActions
     {
         private @InputHandler m_Wrapper;
         public PickupActions(@InputHandler wrapper) { m_Wrapper = wrapper; }
-        public InputAction @interact => m_Wrapper.m_pickup_interact;
+        public InputAction @Click => m_Wrapper.m_pickup_Click;
         public InputActionMap Get() { return m_Wrapper.m_pickup; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -365,16 +302,16 @@ public class @InputHandler : IInputActionCollection, IDisposable
         {
             if (m_Wrapper.m_PickupActionsCallbackInterface != null)
             {
-                @interact.started -= m_Wrapper.m_PickupActionsCallbackInterface.OnInteract;
-                @interact.performed -= m_Wrapper.m_PickupActionsCallbackInterface.OnInteract;
-                @interact.canceled -= m_Wrapper.m_PickupActionsCallbackInterface.OnInteract;
+                @Click.started -= m_Wrapper.m_PickupActionsCallbackInterface.OnClick;
+                @Click.performed -= m_Wrapper.m_PickupActionsCallbackInterface.OnClick;
+                @Click.canceled -= m_Wrapper.m_PickupActionsCallbackInterface.OnClick;
             }
             m_Wrapper.m_PickupActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @interact.started += instance.OnInteract;
-                @interact.performed += instance.OnInteract;
-                @interact.canceled += instance.OnInteract;
+                @Click.started += instance.OnClick;
+                @Click.performed += instance.OnClick;
+                @Click.canceled += instance.OnClick;
             }
         }
     }
@@ -386,12 +323,8 @@ public class @InputHandler : IInputActionCollection, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnMouseLook(InputAction.CallbackContext context);
     }
-    public interface IInteractActions
-    {
-        void OnClick(InputAction.CallbackContext context);
-    }
     public interface IPickupActions
     {
-        void OnInteract(InputAction.CallbackContext context);
+        void OnClick(InputAction.CallbackContext context);
     }
 }

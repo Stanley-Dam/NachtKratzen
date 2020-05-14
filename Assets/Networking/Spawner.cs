@@ -1,23 +1,31 @@
 ﻿using UnityEngine;
+using System.Collections;
+using System;
 
 public class Spawner : MonoBehaviour {
 
     [SerializeField] private NetworkManager networkManager;
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject seekerPrefab;
-    [SerializeField] private Camera camera;
+    [SerializeField] private GameObject cam;
 
     [SerializeField] private int mainPlayerLayer = 9;
 
     private void Awake() {
-        PlayerJoin.playerJoinEvent += (clientId, position, headRotation, playerTypeId, isMain) => SpawnPlayer(clientId, position, headRotation, playerTypeId, isMain);
-        PlayerQuit.playerQuitEvent += (player) => DeSpawnPlayer(player);
-        UpdateSeeker.updateSeekerEvent += (player) => SetSeeker(player);
-        PlayerDeath.playerDeathEvent += (player) => PlayerDeathHandler(player);
+        PlayerJoin.playerJoinEvent += SpawnPlayer;
+        PlayerQuit.playerQuitEvent += DeSpawnPlayer;
+        UpdateSeeker.updateSeekerEvent += SetSeeker;
+        PlayerDeath.playerDeathEvent += PlayerDeathHandler;
+    }
+
+    private void OnDisable() {
+        PlayerJoin.playerJoinEvent -= SpawnPlayer;
+        PlayerQuit.playerQuitEvent -= DeSpawnPlayer;
+        UpdateSeeker.updateSeekerEvent -= SetSeeker;
+        PlayerDeath.playerDeathEvent -= PlayerDeathHandler;
     }
 
     private void SpawnPlayer(string clientId, Vector3 spawnLocation, Quaternion headRotation, int playerTypeId, bool isMain) {
-
         GameObject newPlayer = null;
         Player player = null;
 
@@ -33,14 +41,17 @@ public class Spawner : MonoBehaviour {
                 Seeker seeker = newPlayer.AddComponent<Seeker>();
                 seeker.Instantiate(clientId, networkManager, true, isMain);
                 player = seeker;
+                networkManager.seeker = seeker;
                 break;
         }
 
         //Add the camera to this player
         if(isMain) {
-            MouseLook mouseLook = camera.gameObject.AddComponent<MouseLook>();
-            camera.transform.parent = newPlayer.GetComponent<LocalBodyObjects>().cameraHolder;
-            camera.transform.localPosition = new Vector3(0, 0, 0);
+            cam = Camera.main.gameObject;
+            cam.transform.parent = newPlayer.GetComponent<LocalBodyObjects>().cameraHolder;
+            cam.transform.localPosition = new Vector3(0, 0, 0);
+
+            MouseLook mouseLook = cam.AddComponent<MouseLook>();
             mouseLook.playerBody = newPlayer.transform;
             mouseLook.playerHead = newPlayer.GetComponent<LocalBodyObjects>().head;
 
@@ -64,24 +75,36 @@ public class Spawner : MonoBehaviour {
     }
 
     private void DeSpawnPlayer(Player player) {
+        if (player.IsMainPlayer) {
+            cam.gameObject.GetComponent<MouseLook>().enabled = false;
+        }
+
         Destroy(player.gameObject);
     }
 
     private void PlayerDeathHandler(Player player) {
-        if(player.IsMainPlayer) {
-            camera.gameObject.AddComponent<MouseLook>().enabled = false;
+        bool setCam = false;
+        if (player.IsMainPlayer) {
+            cam.transform.parent = null;
+            setCam = true;
+        }
 
-            Player selectedPlayer = networkManager.Players[Random.Range(0, networkManager.Players.Count)];
+        networkManager.RemoveOnlinePlayer(player);
+        Destroy(player.gameObject);
 
-            camera.transform.parent = selectedPlayer.GetComponent<LocalBodyObjects>().cameraHolder;
-            camera.transform.localPosition = new Vector3(0, 0, 0);
+        if(setCam) {
+            cam.gameObject.GetComponent<MouseLook>().enabled = false;
 
-            foreach (Transform child in selectedPlayer.GetComponentsInChildren<Transform>(true)) {
+            Player selectedPlayer = networkManager.seeker;
+
+            cam.transform.parent = selectedPlayer.gameObject.GetComponent<LocalBodyObjects>().head;
+            cam.transform.localPosition = new Vector3(0, 0, 0);
+            cam.transform.localRotation = Quaternion.Euler(0, 0, 0);
+
+            foreach (Transform child in selectedPlayer.gameObject.GetComponentsInChildren<Transform>(true)) {
                 child.gameObject.layer = mainPlayerLayer;
             }
         }
-
-        Destroy(player.gameObject);
     }
 
 }
