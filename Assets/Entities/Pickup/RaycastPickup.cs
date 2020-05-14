@@ -26,7 +26,8 @@ public class RaycastPickup : MonoBehaviour
         controls.pickup.Click.performed += ctx => pickUp();
     }
 
-    private void Start() {
+    private void Start()
+    {
         //rayLine = GetComponent<LineRenderer>();
     }
 
@@ -35,7 +36,7 @@ public class RaycastPickup : MonoBehaviour
 
         //rayLine.SetPosition(0, cameraPos.position);
 
-        if (Physics.Raycast(bodyObjects.head.position, bodyObjects.head.forward, out hit, range, 9)) {
+        if (Physics.Raycast(bodyObjects.head.position, bodyObjects.head.forward, out hit, range)) {
             //rayLine.SetPosition(1, hit.point);
             //when ray collides with an gameobject it moves all parents and children as the grabby hand children
             //call found player event
@@ -46,11 +47,13 @@ public class RaycastPickup : MonoBehaviour
         }
     }
 
-    private void OnEnable() {
+    private void OnEnable()
+    {
         controls.pickup.Enable();
     }
 
-    private void OnDisable() {
+    private void OnDisable()
+    {
         controls.pickup.Disable();
     }
 }

@@ -27,11 +27,14 @@ public class MouseLook : MonoBehaviour {
 
     private void OnDisable() {
         controls.movement.Disable();
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     private void Start() {
         //Lock the cursor
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void Update() {

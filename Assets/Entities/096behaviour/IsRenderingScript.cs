@@ -19,7 +19,7 @@ public class IsRenderingScript : MonoBehaviour
     private void OnBecameInvisible()
     {
         isVisible = false;
-        if (isVisibleEvent != null)
+        if(isVisibleEvent != null)
             isVisibleEvent(isVisible);
     }
 }
