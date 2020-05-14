@@ -94,9 +94,9 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 256
-  normalSpeed: 2
-  sprintSpeed: 5
-  gravity: -9.18
+  normalSpeed: 4
+  sprintSpeed: 10
+  gravity: -18
   jumpHeight: 2
 --- !u!114 &7681230605907435834
 MonoBehaviour:
