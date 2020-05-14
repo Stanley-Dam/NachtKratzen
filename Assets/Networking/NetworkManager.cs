@@ -44,8 +44,8 @@ public class NetworkManager : MonoBehaviour {
             new PlayerJoinBuilder(socket, this);
     }
 
-    private void PlayerMoveServer(Vector3 destination, Quaternion headRotation) {
-        new MovePlayerBuilder(socket, this, socket.sid, destination, headRotation);
+    private void PlayerMoveServer(Vector3 destination, Quaternion headRotation, MovementType movementType) {
+        new MovePlayerBuilder(socket, this, socket.sid, destination, headRotation, (int) movementType);
     }
 
     /* Receive data from the server */

@@ -6,10 +6,12 @@ public abstract class Player : Entity {
 
     private bool isMain;
     private LocalBodyObjects localBodyObjects;
+    private PlayerAudio playerAudio;
 
     public void Instantiate(string clientId, NetworkManager networkManager, bool alive, bool isMain) {
         this.Instantiate(clientId, networkManager, alive);
         this.localBodyObjects = gameObject.GetComponent<LocalBodyObjects>();
+        this.playerAudio = gameObject.GetComponent<PlayerAudio>();
         this.isMain = isMain;
 
         TeleportPlayer.playerTeleportEvent += (player, destination, headRotation) => {
@@ -21,9 +23,9 @@ public abstract class Player : Entity {
         if (!this.isMain && this.gameObject.GetComponent<PlayerMovement>()) {
             this.gameObject.GetComponent<PlayerMovement>().enabled = false;
 
-            MovePlayer.playerMoveEvent += (player, destination, headRotation) => {
+            MovePlayer.playerMoveEvent += (player, destination, headRotation, movementType) => {
                 if(this == player)
-                    Move(destination, headRotation);
+                    Move(destination, headRotation, movementType);
             };
         }
     }
@@ -35,9 +37,19 @@ public abstract class Player : Entity {
     /// </summary>
     /// <param name="destination">The destination the player has to move towards.</param>
     /// <param name="headRotation">The head rotation of the player.</param>
-    private void Move(Vector3 destination, Quaternion headRotation) {
+    private void Move(Vector3 destination, Quaternion headRotation, int movementType) {
         this.transform.position = destination;
         this.localBodyObjects.head.rotation = headRotation;
+
+        //Play audio :)
+        switch(movementType) {
+            case 1:
+                playerAudio.Walk(PlayerAudioType.WALK_AUDIO_CONCRETE);
+                break;
+            case 2:
+                playerAudio.Walk(PlayerAudioType.RUN_AUDIO_CONCRETE);
+                break;
+        }
     }
 
     /// <summary>

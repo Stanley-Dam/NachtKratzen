@@ -8,10 +8,11 @@ using UnityEngine;
 class MovePlayer : PacketHandler, PacketHandlerInterface {
 
     //Player move event
-    public delegate void PlayerMoveEvent(Player player, Vector3 destination, Quaternion headRotation);
+    public delegate void PlayerMoveEvent(Player player, Vector3 destination, Quaternion headRotation, int movementType);
     public static event PlayerMoveEvent playerMoveEvent;
 
     private string clientId;
+    private int movementType;
     private float x;
     private float y;
     private float z;
@@ -30,6 +31,7 @@ class MovePlayer : PacketHandler, PacketHandlerInterface {
         : base(e, socket, networkManager) {
 
         this.clientId = data["socketId"];
+        this.movementType = int.Parse(data["movementType"]);
         this.x = PacketUtils.FromPacketString(data["locationToX"]);
         this.y = PacketUtils.FromPacketString(data["locationToY"]);
         this.z = PacketUtils.FromPacketString(data["locationToZ"]);
@@ -48,7 +50,7 @@ class MovePlayer : PacketHandler, PacketHandlerInterface {
             Vector3 location = new Vector3(this.x, this.y, this.z);
             Quaternion headRotation = new Quaternion(this.headRotX, this.headRotY, this.headRotZ, this.headRotW);
 
-            playerMoveEvent(player, location, headRotation);
+            playerMoveEvent(player, location, headRotation, this.movementType);
         }
     }
 }
