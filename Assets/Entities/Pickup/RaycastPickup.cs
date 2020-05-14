@@ -10,10 +10,10 @@ public class RaycastPickup : MonoBehaviour
 
     private InputHandler controls;
 
+    [SerializeField] private LocalBodyObjects bodyObjects;
+
     [SerializeField]
     private float range;
-
-    private Transform cameraPos;
 
     //[SerializeField]
     //private LineRenderer rayLine;
@@ -21,60 +21,36 @@ public class RaycastPickup : MonoBehaviour
     [SerializeField]
     private bool isHoldingSomething;
 
-    private void Awake()
-    {
+    private void Awake() {
         controls = new InputHandler();
-        controls.pickup.interact.performed += ctx => pickUp();
-        if(Camera.main != null)
-        cameraPos = Camera.main.transform;
+        controls.pickup.Click.performed += ctx => pickUp();
     }
 
-    private void Start()
-    {
+    private void Start() {
         //rayLine = GetComponent<LineRenderer>();
     }
 
-    private void pickUp()
-    {
-        if (!isHoldingSomething)
-        {
-            RaycastHit hit;
+    private void pickUp() {
+        RaycastHit hit;
 
-            //rayLine.SetPosition(0, cameraPos.position);
+        //rayLine.SetPosition(0, cameraPos.position);
 
-            if (Physics.Raycast(cameraPos.position, cameraPos.forward, out hit, range))
-            {
-                //rayLine.SetPosition(1, hit.point);
-                //when ray collides with an gameobject it moves all parents and children as the grabby hand children
-                //call found player event
-                if (foundPlayerEvent != null)
-                    foundPlayerEvent(hit.collider.gameObject);
-            }
-            else
-            {
-                //rayLine.SetPosition(1, cameraPos.position + (cameraPos.transform.forward * range));
-            }
-
-            //print("I am picking "+ hit +" up");
-        }
-        else if (isHoldingSomething)
-        {
-            //let go
-        }
-        //error catch if bool = null
-        else
-        {
-            return;
+        if (Physics.Raycast(bodyObjects.head.position, bodyObjects.head.forward, out hit, range, 9)) {
+            //rayLine.SetPosition(1, hit.point);
+            //when ray collides with an gameobject it moves all parents and children as the grabby hand children
+            //call found player event
+            if (foundPlayerEvent != null)
+                foundPlayerEvent(hit.collider.transform.root.gameObject);
+        } else {
+            //rayLine.SetPosition(1, cameraPos.position + (cameraPos.transform.forward * range));
         }
     }
 
-    private void OnEnable()
-    {
+    private void OnEnable() {
         controls.pickup.Enable();
     }
 
-    private void OnDisable()
-    {
+    private void OnDisable() {
         controls.pickup.Disable();
     }
 }
