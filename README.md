@@ -38,3 +38,4 @@ Tijdens dit project houden wij ons aan de scrum methode, hiervoor hebben wij dez
 Dit zijn links naar onze documentatie:
  - [Packet protocol](https://docs.google.com/document/d/1Y13P_vc6lDv2jMns_a5W37Y1nRPTUWBA6yy2OJYxqzU/edit?usp=sharing)
  - [Game loop](https://docs.google.com/document/d/1B37fRN4JlXPEVjBk-zfjm9Jxi7HfkaBcQ8tgQnmvBxM/edit?usp=sharing)
+ - [Game design document](https://docs.google.com/presentation/d/13__SjSkyx8agL3pCF1xkpBOPjBU2b0yhYnEoDYlbjEQ/edit?usp=sharing)
