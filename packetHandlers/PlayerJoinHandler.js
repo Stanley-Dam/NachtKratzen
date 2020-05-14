@@ -26,8 +26,8 @@ function PlayerJoinHandler(server, socket) {
     if(server.connectedPlayers.length <= 0)
         server.StartGameLoop();
 
-    server.connectedPlayers.push(newPlayer);
     server.BroadCastToClients('PlayerJoin', newPlayer.GetJoinPacket());
+    server.connectedPlayers.push(newPlayer);
     console.log(newPlayer.clientId + " Joined the game (Server: " + server.port + ")");
 }
 

@@ -61,7 +61,6 @@ class GameLoop {
          */
         switch(this.gameStage) {
             case Stages.WAITING_FOR_PLAYERS:
-                this.PickSeeker();
                 if(onlinePlayers >= 3) {
                     this.gameStage = Stages.STARTING;
                     this.clock = 0;
@@ -76,7 +75,7 @@ class GameLoop {
                     break;
                 }
 
-                var timeLeft = 30 - this.clock;
+                var timeLeft = 20 - this.clock;
 
                 if(timeLeft <= 0) {
                     //Let's start the actual game! :D
@@ -95,7 +94,7 @@ class GameLoop {
                 //Count down 30 seconds, check if seeker is still online
                 if(this.server.seeker == null) {
                     this.clock = 0;
-                    this.gameStage = Stages.WAITING_FOR_PLAYERS;
+                    this.gameStage = Stages.END;
                     //Let's also give the players a heads up :)
                     this.server.BroadCastToClients('PlayerMessage', new PlayerMessage(MessageTypes.SAD_NEWS, Language.PLAYER_LEFT_SERVER_CANCELED));
                     break;
@@ -136,7 +135,7 @@ class GameLoop {
                 }
                 break;
             case Stages.END:
-                var timeLeft = 20 - this.clock;
+                var timeLeft = 10 - this.clock;
                 //TODO Send stuff for end screen? :)
 
                 if(timeLeft <= 0) {

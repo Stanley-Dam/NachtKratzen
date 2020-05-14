@@ -3,6 +3,7 @@ const GameLoop = require('./GameLoop.js');
 const JoinPacketHandler = require('../packetHandlers/PlayerJoinHandler.js');
 const QuitPacketHandler = require('../packetHandlers/PlayerQuitHandler.js');
 const MovePacketHandler = require('../packetHandlers/PlayerMoveHandler.js');
+const PlayerDeathHandler = require('../packetHandlers/PlayerDeathHandler.js');
 
 const ServerClose = require('../packets/ServerClose.js');
 
@@ -44,6 +45,10 @@ class Server {
 
             socket.on('PlayerMove', function(data) {
                 MovePacketHandler(server, data);
+            });
+
+            socket.on('PlayerDeath', function(data) {
+                PlayerDeathHandler(server, data);
             });
 
             /* Playerquit & disconnect do the same thing :P

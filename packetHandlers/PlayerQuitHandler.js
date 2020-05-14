@@ -6,8 +6,18 @@ const QuitPacket = require('../packets/QuitPacket.js');
  * @param {The socket received} socket 
  */
 function PlayerQuitHandler(server, socket) {
-    var index = server.connectedPlayers.indexOf(server.GetPlayerById(socket.id));
+    var player = server.GetPlayerById(socket.id);
+    var index = server.connectedPlayers.indexOf(player);
     server.connectedPlayers.splice(index, 1);
+
+    if(server.gameStarted) {
+        if(server.seeker == player)
+            server.seeker = null;
+
+        if(server.hiders.includes(player)) {
+            server.hiders.splice(server.hiders.indexOf(player), 1);
+        }
+    }
 
     var dataObject = new QuitPacket(socket.id);
             
