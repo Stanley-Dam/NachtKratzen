@@ -39,7 +39,7 @@ class Proxy {
 
                 if(proxy.servers.length > 0) {
                     proxy.servers.forEach(server => {
-                        if(server.connectedPlayers.length < 4 || server.gameStarted) {
+                        if(server.connectedPlayers.length < 20 && !server.gameStarted) {
                             socket.emit('RedirectToServer', new RedirectPacket(server.port));
                             joinedExistingGame = true;
                         }
