@@ -6,11 +6,13 @@ public abstract class Player : Entity {
 
     private bool isMain;
     private LocalBodyObjects localBodyObjects;
+    private Animator animator;
     private PlayerAudio playerAudio;
 
     public void Instantiate(string clientId, NetworkManager networkManager, bool alive, bool isMain) {
         this.Instantiate(clientId, networkManager, alive);
         this.localBodyObjects = gameObject.GetComponent<LocalBodyObjects>();
+        this.animator = gameObject.GetComponent<Animator>();
         this.playerAudio = gameObject.GetComponent<PlayerAudio>();
         this.isMain = isMain;
 
@@ -39,14 +41,23 @@ public abstract class Player : Entity {
     /// <param name="headRotation">The head rotation of the player.</param>
     private void Move(Vector3 destination, Quaternion headRotation, int movementType) {
         this.transform.position = destination;
-        this.localBodyObjects.head.rotation = headRotation;
+
+        Vector3 euler = headRotation.eulerAngles;
+        this.transform.rotation = Quaternion.Euler(0, euler.y, 0);
+        this.localBodyObjects.head.localRotation = Quaternion.Euler(euler.x, 0, 0);
 
         //Play audio :)
-        switch(movementType) {
+        //And animation
+        switch (movementType) {
+            case 0:
+                animator.SetFloat("Speed", 0f);
+                break;
             case 1:
+                animator.SetFloat("Speed", 0.5f);
                 playerAudio.Walk(PlayerAudioType.WALK_AUDIO_CONCRETE);
                 break;
             case 2:
+                animator.SetFloat("Speed", 1f);
                 playerAudio.Walk(PlayerAudioType.RUN_AUDIO_CONCRETE);
                 break;
         }
