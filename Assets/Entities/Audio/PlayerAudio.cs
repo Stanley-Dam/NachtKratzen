@@ -5,13 +5,18 @@ using UnityEngine;
 public class PlayerAudio : MonoBehaviour {
 
     [SerializeField] private AudioSource audioSource;
-    [SerializeField] private float stepDelay = 1f;
+    [SerializeField] private float stepDelay = 0.5f;
 
-    private float stepCooldown = 0;
+    private bool canStep = true;
 
-    public void MakeNoise(PlayerAudioType type) {
+    public void Jump(PlayerAudioType type) {
         audioSource.clip = PlayerAudioType.GetClip(type.Sounds[Random.Range(0, type.Sounds.Length)]);
         audioSource.Play();
+
+        StopCoroutine("DoStepCooldown");
+
+        canStep = false;
+        StartCoroutine("DoStepCooldown");
     }
 
     /// <summary>
@@ -19,12 +24,12 @@ public class PlayerAudio : MonoBehaviour {
     /// </summary>
     /// <param name="type">type of walking, ex: sprinting or walking. </param>
     public void Walk(PlayerAudioType type) {
-        if(!audioSource.isPlaying && stepCooldown <= 0) {
+        if(canStep) {
             audioSource.clip = PlayerAudioType.GetClip(type.Sounds[Random.Range(0, type.Sounds.Length)]);
             audioSource.Play();
 
-            stepCooldown = stepDelay;
-            StartCoroutine(DoStepCooldown());
+            canStep = false;
+            StartCoroutine("DoStepCooldown");
         }
     }
 
@@ -32,12 +37,15 @@ public class PlayerAudio : MonoBehaviour {
     /// A cooldown so the footstep audio doesn't get spammed.
     /// </summary>
     private IEnumerator DoStepCooldown() {
-        while(stepCooldown > 0) {
-            stepCooldown -= 0.1f;
-            yield return new WaitForSeconds(0.1f);
+        bool cooldownDone = false;
+
+        while (cooldownDone == false) {
+            yield return new WaitForSeconds(stepDelay);
+            cooldownDone = true;
         }
 
-        StopCoroutine(DoStepCooldown());
+        canStep = true;
+        StopCoroutine("DoStepCooldown");
         yield return null;
     }
 

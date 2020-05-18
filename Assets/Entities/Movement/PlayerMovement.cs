@@ -22,10 +22,11 @@ public class PlayerMovement : MonoBehaviour {
     private bool isGrounded = false;
     private bool jumping = false;
     private bool isSprinting = false;
-    private MovementType movemenType = MovementType.IDLE;
+    private MovementType movementType = MovementType.IDLE;
     private Vector3 positionLastFrame = new Vector3(0, 0);
 
     [SerializeField] private PlayerAudio playerAudio;
+    [SerializeField] private PlayerTypes playerType;
 
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundDistance = 0.4f;
@@ -79,10 +80,11 @@ public class PlayerMovement : MonoBehaviour {
         if(positionLastFrame != this.transform.position) {
             positionLastFrame = this.transform.position;
             if (localPlayerMoveEvent != null)
-                localPlayerMoveEvent(transform.position, movemenType);
-        } else if(movemenType != MovementType.IDLE) {
-            movemenType = MovementType.IDLE;
-            localPlayerMoveEvent(transform.position, movemenType);
+                localPlayerMoveEvent(transform.position, movementType);
+        } else if(movementType != MovementType.IDLE) {
+            movementType = MovementType.IDLE;
+            if(localPlayerMoveEvent != null)
+                localPlayerMoveEvent(transform.position, movementType);
         }
     }
 
@@ -98,17 +100,19 @@ public class PlayerMovement : MonoBehaviour {
 
         //Audio
         if (speed == normalSpeed) {
-            movemenType = MovementType.WALKING;
-            playerAudio.Walk(PlayerAudioType.WALK_AUDIO_CONCRETE);
+            movementType = MovementType.WALKING;
+            playerAudio.Walk(PlayerAudioType.GetWalkByPlayerType(this.playerType));
         } else {
-            movemenType = MovementType.RUNNING;
-            playerAudio.Walk(PlayerAudioType.RUN_AUDIO_CONCRETE);
+            movementType = MovementType.RUNNING;
+            playerAudio.Walk(PlayerAudioType.GetRunByPlayerType(this.playerType));
         }
     }
 
     private void Jump() {
         if (isGrounded) {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            movementType = MovementType.JUMPING;
+            playerAudio.Jump(PlayerAudioType.GetJumpByPlayerType(this.playerType));
         }
     }
 }

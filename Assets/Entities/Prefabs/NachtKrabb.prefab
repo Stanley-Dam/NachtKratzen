@@ -118,6 +118,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localBodyObjects: {fileID: 5347175294015443301}
   playerAudio: {fileID: 7681230605907435834}
+  playerType: 1
   groundCheck: {fileID: 7681230607207895000}
   groundDistance: 0.4
   groundMask:
@@ -140,7 +141,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioSource: {fileID: 7681230607439031758}
-  stepDelay: 1
+  stepDelay: 0.5
 --- !u!114 &5347175294015443301
 MonoBehaviour:
   m_ObjectHideFlags: 0

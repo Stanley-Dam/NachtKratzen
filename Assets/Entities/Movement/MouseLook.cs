@@ -54,7 +54,8 @@ public class MouseLook : MonoBehaviour {
         playerHead.localRotation = transform.localRotation;
 
         if(transform.rotation != prevHeadRotation) {
-            localPlayerHeadMoveEvent(playerHead.rotation);
+            if(localPlayerHeadMoveEvent != null)
+                localPlayerHeadMoveEvent(playerHead.rotation);
         }
     }
 
