@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour {
      * It handles all movement input.
      */
 
-    public delegate void LocalPlayerMoveEvent(Vector3 destination, Quaternion headRotation, MovementType movementType);
+    public delegate void LocalPlayerMoveEvent(Vector3 destination, MovementType movementType);
     public static event LocalPlayerMoveEvent localPlayerMoveEvent;
 
     [SerializeField] private LocalBodyObjects localBodyObjects;
@@ -23,6 +23,7 @@ public class PlayerMovement : MonoBehaviour {
     private bool jumping = false;
     private bool isSprinting = false;
     private MovementType movemenType = MovementType.IDLE;
+    private Vector3 positionLastFrame = new Vector3(0, 0);
 
     [SerializeField] private PlayerAudio playerAudio;
 
@@ -62,8 +63,6 @@ public class PlayerMovement : MonoBehaviour {
 
         if (direction != new Vector2())
             Move();
-        else
-            movemenType = MovementType.IDLE;
 
         if (jumping)
             Jump();
@@ -77,8 +76,14 @@ public class PlayerMovement : MonoBehaviour {
 
         character.Move(velocity * Time.deltaTime);
 
-        if(localPlayerMoveEvent != null)
-            localPlayerMoveEvent(transform.position, localBodyObjects.head.rotation, movemenType);
+        if(positionLastFrame != this.transform.position) {
+            positionLastFrame = this.transform.position;
+            if (localPlayerMoveEvent != null)
+                localPlayerMoveEvent(transform.position, movemenType);
+        } else if(movemenType != MovementType.IDLE) {
+            movemenType = MovementType.IDLE;
+            localPlayerMoveEvent(transform.position, movemenType);
+        }
     }
 
     private void Move() {
@@ -102,7 +107,8 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     private void Jump() {
-        if (isGrounded)
+        if (isGrounded) {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
     }
 }
