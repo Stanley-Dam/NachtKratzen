@@ -15,7 +15,6 @@ public class NetworkManager : MonoBehaviour {
     // Start is called before the first frame update
     private void Start() {
         //Start listening to all the server events
-
         //Connection packets
         socket.On("connect", PlayerJoinServer);
         socket.On("RedirectToServer", Redirect);
@@ -23,15 +22,18 @@ public class NetworkManager : MonoBehaviour {
         socket.On("PlayerJoin", OnPlayerJoin);
         socket.On("PlayerQuit", OnPlayerQuit);
         socket.On("PlayerMove", OnPlayerMove);
+        socket.On("PlayerMoveHead", OnPlayerMoveHead);
         socket.On("PlayerTeleport", OnPlayerTeleport);
         socket.On("UpdateSeeker", OnSeekerUpdate);
         socket.On("PlayerDeath", OnPlayerDeath);
 
         PlayerMovement.localPlayerMoveEvent += PlayerMoveServer;
+        MouseLook.localPlayerHeadMoveEvent += PlayerMoveHeadServer;
     }
 
     private void OnDisable() {
         PlayerMovement.localPlayerMoveEvent -= PlayerMoveServer;
+        MouseLook.localPlayerHeadMoveEvent -= PlayerMoveHeadServer;
     }
 
     /* Send data to the server. */
@@ -44,8 +46,12 @@ public class NetworkManager : MonoBehaviour {
             new PlayerJoinBuilder(socket, this);
     }
 
-    private void PlayerMoveServer(Vector3 destination, Quaternion headRotation, MovementType movementType) {
-        new MovePlayerBuilder(socket, this, socket.sid, destination, headRotation, (int) movementType);
+    private void PlayerMoveServer(Vector3 destination, MovementType movementType) {
+        new MovePlayerBuilder(socket, this, socket.sid, destination, (int) movementType);
+    }
+
+    private void PlayerMoveHeadServer(Quaternion headRotation) {
+        new PlayerMoveHeadBuilder(socket, this, socket.sid, headRotation);
     }
 
     /* Receive data from the server */
@@ -61,6 +67,11 @@ public class NetworkManager : MonoBehaviour {
     private void OnPlayerMove(SocketIO.SocketIOEvent e) {
         new MovePlayer(e, socket, this);
     }
+
+    private void OnPlayerMoveHead(SocketIO.SocketIOEvent e) {
+        new MovePlayerHead(e, socket, this);
+    }
+
 
     private void OnPlayerTeleport(SocketIO.SocketIOEvent e) {
         new TeleportPlayer(e, socket, this);
@@ -115,6 +126,10 @@ public class NetworkManager : MonoBehaviour {
 
     /* Properties
      */
+
+    public SocketIO.SocketIOComponent Socket {
+        get { return this.socket; }
+    }
 
     public bool Joined {
         get { return this.joined; }

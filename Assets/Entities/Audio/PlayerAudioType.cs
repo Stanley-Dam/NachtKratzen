@@ -7,7 +7,7 @@ public class PlayerAudioType {
     const string PREFIX = "Audio/Player/";
 
     public static readonly PlayerAudioType WALK_AUDIO_CONCRETE = new PlayerAudioType (0, new string[] { "walk/concrete/concrete_01", "walk/concrete/concrete_02", "walk/concrete/concrete_03", "walk/concrete/concrete_04", "walk/concrete/concrete_05", "walk/concrete/concrete_06" });
-    public static readonly PlayerAudioType RUN_AUDIO_CONCRETE = new PlayerAudioType(1, new string[] { "run/concrete/concrete_01", "run/concrete/concrete_02", "run/concrete/concrete_03", "run/concrete/concrete_04", "run/concrete/concrete_05", "run/concrete/concrete_06", "run/concrete/concrete_07" });
+    public static readonly PlayerAudioType RUN_AUDIO_CONCRETE = new PlayerAudioType(1, new string[] { "run/Run_1", "run/Run_2", "run/Run_3" });
 
     public static readonly PlayerAudioType NOISE_HAND_CLAP = new PlayerAudioType(2, new string[] { "run/concrete/concrete_01" });
 

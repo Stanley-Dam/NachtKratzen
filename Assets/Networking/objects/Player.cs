@@ -25,9 +25,14 @@ public abstract class Player : Entity {
         if (!this.isMain && this.gameObject.GetComponent<PlayerMovement>()) {
             this.gameObject.GetComponent<PlayerMovement>().enabled = false;
 
-            MovePlayer.playerMoveEvent += (player, destination, headRotation, movementType) => {
+            MovePlayer.playerMoveEvent += (player, destination, movementType) => {
                 if(this == player)
-                    Move(destination, headRotation, movementType);
+                    Move(destination, movementType);
+            };
+
+            MovePlayerHead.playerMoveHeadEvent += (player, headRotation) => {
+                if (this == player)
+                    MoveHead(headRotation);
             };
         }
     }
@@ -39,12 +44,8 @@ public abstract class Player : Entity {
     /// </summary>
     /// <param name="destination">The destination the player has to move towards.</param>
     /// <param name="headRotation">The head rotation of the player.</param>
-    private void Move(Vector3 destination, Quaternion headRotation, int movementType) {
+    private void Move(Vector3 destination, int movementType) {
         this.transform.position = destination;
-
-        Vector3 euler = headRotation.eulerAngles;
-        this.transform.rotation = Quaternion.Euler(0, euler.y, 0);
-        this.localBodyObjects.head.localRotation = Quaternion.Euler(euler.x, 0, 0);
 
         //Play audio :)
         //And animation
@@ -53,14 +54,20 @@ public abstract class Player : Entity {
                 animator.SetFloat("Speed", 0f);
                 break;
             case 1:
-                animator.SetFloat("Speed", 0.5f);
                 playerAudio.Walk(PlayerAudioType.WALK_AUDIO_CONCRETE);
+                animator.SetFloat("Speed", 0.5f);
                 break;
             case 2:
-                animator.SetFloat("Speed", 1f);
                 playerAudio.Walk(PlayerAudioType.RUN_AUDIO_CONCRETE);
+                animator.SetFloat("Speed", 1f);
                 break;
         }
+    }
+
+    private void MoveHead(Quaternion headRotation) {
+        Vector3 euler = headRotation.eulerAngles;
+        this.transform.rotation = Quaternion.Euler(0, euler.y, 0);
+        this.localBodyObjects.head.localRotation = Quaternion.Euler(euler.x, 0, 0);
     }
 
     /// <summary>

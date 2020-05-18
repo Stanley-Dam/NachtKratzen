@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class VeryTemporaryQuitScript : MonoBehaviour {
 
+    [SerializeField] private NetworkManager networkManager;
     private InputHandler inputHandler;
 
     // Start is called before the first frame update
@@ -23,6 +24,7 @@ public class VeryTemporaryQuitScript : MonoBehaviour {
     }
 
     private void Quit() {
+        networkManager.Socket.Close();
         SceneManager.LoadScene(0, LoadSceneMode.Single);
     }
 

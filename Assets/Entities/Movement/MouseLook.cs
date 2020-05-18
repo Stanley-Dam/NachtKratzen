@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class MouseLook : MonoBehaviour {
 
+    public delegate void LocalPlayerMoveEvent(Quaternion headRotation);
+    public static event LocalPlayerMoveEvent localPlayerHeadMoveEvent;
+
     /* Simple class to controll the player camera, has to be on the camera.
      */
 
@@ -44,9 +47,15 @@ public class MouseLook : MonoBehaviour {
         xRotation -= look.y;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
+        Quaternion prevHeadRotation = transform.rotation;
+
         transform.localRotation = Quaternion.Euler(xRotation, 0, 0);
         playerBody.Rotate(Vector3.up * look.x);
         playerHead.localRotation = transform.localRotation;
+
+        if(transform.rotation != prevHeadRotation) {
+            localPlayerHeadMoveEvent(playerHead.rotation);
+        }
     }
 
 }
