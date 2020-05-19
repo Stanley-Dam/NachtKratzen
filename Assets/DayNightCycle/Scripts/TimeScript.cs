@@ -5,9 +5,9 @@ using UnityEngine;
 public class TimeScript : MonoBehaviour
 {
     [SerializeField]
-    private float time;
+    public float time;
     [SerializeField]
-    private int secondsPerSecond;
+    public int secondsPerSecond;
 
     void Update()
     {
@@ -18,6 +18,7 @@ public class TimeScript : MonoBehaviour
         if (time >= 86400)
         {
             time -= 86400;
+            //You can Sync up time here when it is set to zero
         }
     }
 
