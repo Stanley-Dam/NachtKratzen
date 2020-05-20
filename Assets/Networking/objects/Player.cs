@@ -5,9 +5,9 @@ using UnityEngine;
 public abstract class Player : Entity {
 
     private bool isMain;
-    private LocalBodyObjects localBodyObjects;
-    private Animator animator;
-    private PlayerAudio playerAudio;
+    protected LocalBodyObjects localBodyObjects;
+    protected Animator animator;
+    protected PlayerAudio playerAudio;
 
     public void Instantiate(string clientId, NetworkManager networkManager, bool alive, bool isMain) {
         this.Instantiate(clientId, networkManager, alive);
@@ -47,21 +47,11 @@ public abstract class Player : Entity {
     private void Move(Vector3 destination, int movementType) {
         this.transform.position = destination;
 
-        //Play audio :)
-        //And animation
-        switch (movementType) {
-            case 0:
-                animator.SetFloat("Speed", 0f);
-                break;
-            case 1:
-                playerAudio.Walk(PlayerAudioType.WALK_AUDIO_CONCRETE);
-                animator.SetFloat("Speed", 0.5f);
-                break;
-            case 2:
-                playerAudio.Walk(PlayerAudioType.RUN_AUDIO_CONCRETE);
-                animator.SetFloat("Speed", 1f);
-                break;
-        }
+        MoveHandler(movementType);
+    }
+
+    protected virtual void MoveHandler(int movementType) {
+        //Can be handled by classes inheriting this class :)
     }
 
     private void MoveHead(Quaternion headRotation) {
