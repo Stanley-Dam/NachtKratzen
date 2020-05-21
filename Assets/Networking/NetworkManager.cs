@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class NetworkManager : MonoBehaviour {
 
     [SerializeField] private SocketIO.SocketIOComponent socket;
+    [SerializeField] private TimeScript timeScript;
 
     public Player seeker;
     private List<Entity> entities = new List<Entity>();
@@ -26,6 +27,10 @@ public class NetworkManager : MonoBehaviour {
         socket.On("PlayerTeleport", OnPlayerTeleport);
         socket.On("UpdateSeeker", OnSeekerUpdate);
         socket.On("PlayerDeath", OnPlayerDeath);
+
+        socket.On("SyncDayNightCycle", OnSyncDayNightCycle);
+        socket.On("StartDayNightCycle", OnStartDayNightCycle);
+        socket.On("StopDayNightCycle", OnStopDayNightCycle);
 
         PlayerMovement.localPlayerMoveEvent += PlayerMoveServer;
         MouseLook.localPlayerHeadMoveEvent += PlayerMoveHeadServer;
@@ -72,6 +77,9 @@ public class NetworkManager : MonoBehaviour {
         new MovePlayerHead(e, socket, this);
     }
 
+    private void OnSyncDayNightCycle(SocketIO.SocketIOEvent e) {
+        new SyncDayNightCycle(e, socket, this);
+    }
 
     private void OnPlayerTeleport(SocketIO.SocketIOEvent e) {
         new TeleportPlayer(e, socket, this);
@@ -98,6 +106,17 @@ public class NetworkManager : MonoBehaviour {
         socket.ReConnect(data["port"]);
         //Start registering new data
         this.Start();
+    }
+
+    /* Handeling simple server messages. (packets without additional data)
+     */
+
+    private void OnStartDayNightCycle(SocketIO.SocketIOEvent e) {
+        timeScript.doingCycle = true;
+    }
+
+    private void OnStopDayNightCycle(SocketIO.SocketIOEvent e) {
+        timeScript.doingCycle = false;
     }
 
     /* GETTERS & SETTERS

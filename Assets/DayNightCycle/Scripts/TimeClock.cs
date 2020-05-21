@@ -8,11 +8,9 @@ public class TimeClock : MonoBehaviour
     [SerializeField]
     private float clockHour, clockMin, clockSec;
 
-    [SerializeField]
-    TimeScript timeScript;
+    [SerializeField] TimeScript timeScript;
 
-    [SerializeField]
-    Text rawClockTXT, digitalClockTXT;
+    //[SerializeField] Text rawClockTXT, digitalClockTXT;
 
     private void Update()
     {
@@ -20,7 +18,7 @@ public class TimeClock : MonoBehaviour
         clockMin = Mathf.Floor(timeScript.GetTime() / 60 - clockHour * 60);
         clockSec = Mathf.Floor(timeScript.GetTime() - clockMin * 60 - clockHour * 3600);
 
-        rawClockTXT.text = "Raw time: " + Mathf.Floor(timeScript.GetTime());
-        digitalClockTXT.text = "Digital Time: " + clockHour + ":" + clockMin + ":" + clockSec;
+        //rawClockTXT.text = "Raw time: " + Mathf.Floor(timeScript.GetTime());
+        //digitalClockTXT.text = "Digital Time: " + clockHour + ":" + clockMin + ":" + clockSec;
     }
 }
