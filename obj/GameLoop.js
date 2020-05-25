@@ -6,9 +6,13 @@ const Language = JSON.parse(langFileContent);
 const spawnLocationFile = fs.readFileSync('./data/SpawnLocation.json');
 const spawnPoint = JSON.parse(spawnLocationFile);
 
+const dayNightCycleDataFile = fs.readFileSync('./data/DayNightCycleData.json');
+const dayNightCycleData = JSON.parse(dayNightCycleDataFile);
+
 const PlayerMessage = require('../packets/PlayerMessage.js');
 const PlayerTeleport = require('../packets/PlayerTeleport.js');
 const UpdateSeeker = require('../packets/UpdateSeeker.js');
+const SyncDayNightCycle = require('../packets/SyncDayNightCycle.js');
 
 const Stages = require('../data/Stages.js');
 const MessageTypes = require('../data/MessageTypes.js');
@@ -24,6 +28,7 @@ class GameLoop {
 
         this.tick = 0;
         this.clock = 0;
+        this.lastTimeMileStone = 0;
         this.previous = this.hrtimeMs();
         this.tickLengthMs = 1000 / TICK_RATE;
 
@@ -62,6 +67,8 @@ class GameLoop {
         switch(this.gameStage) {
             case Stages.WAITING_FOR_PLAYERS:
                 if(onlinePlayers >= 3) {
+                    this.server.BroadCastToClients('SyncDayNightCycle', new SyncDayNightCycle(dayNightCycleData.hidersReleaseTime, dayNightCycleData.secondsPerSecond));
+                    
                     this.gameStage = Stages.STARTING;
                     this.clock = 0;
                 }
@@ -85,6 +92,8 @@ class GameLoop {
                     this.server.gameStarted = true;
                     this.PickSeeker();
                     this.TeleportPlayers(0);
+                    this.server.BroadCastToClients('SyncDayNightCycle', new SyncDayNightCycle(dayNightCycleData.hidersReleaseTime, dayNightCycleData.secondsPerSecond));
+                    this.server.MessageToClients('StartDayNightCycle');
                     break;
                 }
 
@@ -108,6 +117,8 @@ class GameLoop {
                     this.gameStage = Stages.INGAME;
                     this.clock = 0;
                     this.TeleportPlayers(1);
+                    this.server.BroadCastToClients('SyncDayNightCycle', new SyncDayNightCycle(dayNightCycleData.gameStartTime, dayNightCycleData.secondsPerSecond));
+                    this.server.MessageToClients('StartDayNightCycle');
                     break;
                 }
 
@@ -120,6 +131,8 @@ class GameLoop {
 
                 if(this.server.seeker == null || timeLeft <= 0) {
                     //Hiders have won the game!
+                    this.server.BroadCastToClients('SyncDayNightCycle', new SyncDayNightCycle(dayNightCycleData.gameEndTime, dayNightCycleData.secondsPerSecond));
+                    this.server.MessageToClients('StopDayNightCycle');
                     this.server.BroadCastToClients('PlayerMessage', new PlayerMessage(MessageTypes.HAPPY_NEWS, Language.HIDERS_WIN));
                     this.gameStage = Stages.END;
                     this.clock = 0;
@@ -128,6 +141,8 @@ class GameLoop {
 
                 if(this.server.hiders.length <= 0) {
                     //The seeker has won the game!
+                    this.server.BroadCastToClients('SyncDayNightCycle', new SyncDayNightCycle(dayNightCycleData.gameEndTime, dayNightCycleData.secondsPerSecond));
+                    this.server.MessageToClients('StopDayNightCycle');
                     this.server.BroadCastToClients('PlayerMessage', new PlayerMessage(MessageTypes.SPOOKY_NEWS, Language.SEEKER_WINS));
                     this.gameStage = Stages.END;
                     this.clock = 0;
@@ -167,11 +182,13 @@ class GameLoop {
         var flooredTime = Math.floor(time);
         var doBroadCast = false;
 
-        if(flooredTime % 10 == 0 || flooredTime < 5)
+        if((flooredTime % 10 == 0 || flooredTime <= 5) && flooredTime != this.lastTimeMileStone)
             doBroadCast = true;
 
-        if(doBroadCast)
+        if(doBroadCast) {
             this.server.BroadCastToClients('PlayerMessage', new PlayerMessage(MessageTypes.HAPPY_NEWS, flooredTime + Language.SECONDS_LEFT));
+            this.lastTimeMileStone = flooredTime;
+        }
     }
 
     /**
