@@ -28,6 +28,8 @@ public class NetworkManager : MonoBehaviour {
         socket.On("UpdateSeeker", OnSeekerUpdate);
         socket.On("PlayerDeath", OnPlayerDeath);
 
+        socket.On("PlayerMessage", OnPlayerMessage);
+
         socket.On("SyncDayNightCycle", OnSyncDayNightCycle);
         socket.On("StartDayNightCycle", OnStartDayNightCycle);
         socket.On("StopDayNightCycle", OnStopDayNightCycle);
@@ -91,6 +93,10 @@ public class NetworkManager : MonoBehaviour {
 
     private void OnPlayerDeath(SocketIO.SocketIOEvent e) {
         new PlayerDeath(e, socket, this);
+    }
+
+    private void OnPlayerMessage(SocketIO.SocketIOEvent e) {
+        new PlayerMessageHandler(e, socket, this);
     }
 
     private void ServerClosed(SocketIO.SocketIOEvent e) {
