@@ -45,6 +45,8 @@ public class Spawner : MonoBehaviour {
                 break;
         }
 
+        player.MoveHead(headRotation);
+
         //Add the camera to this player
         if(isMain) {
             cam = Camera.main.gameObject;
