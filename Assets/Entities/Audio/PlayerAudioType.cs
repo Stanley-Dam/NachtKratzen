@@ -55,4 +55,20 @@ public class PlayerAudioType {
     public static AudioClip GetClip(string type) {
         return Resources.Load<AudioClip>(PREFIX + type);
     }
+
+    public static PlayerAudioType GetByMessageType(MessageTypes messageType) {
+
+        switch(messageType) {
+            case MessageTypes.HAPPY_NEWS:
+                return START;
+            case MessageTypes.SAD_NEWS:
+                return DEAD;
+            case MessageTypes.SPOOKY_NEWS:
+                return HIDER_SEES_SEEKER;
+            case MessageTypes.VICTORIOUS_NEWS:
+                return END;
+        }
+        
+        return null;
+    }
 }
