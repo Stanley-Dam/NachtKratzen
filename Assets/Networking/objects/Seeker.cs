@@ -38,6 +38,9 @@ public class Seeker : Player {
             case 3:
                 playerAudio.Jump(PlayerAudioType.SEEKER_JUMP);
                 break;
+            case 4:
+                //TODO add the crouch animation ;)
+                break;
         }
     }
 

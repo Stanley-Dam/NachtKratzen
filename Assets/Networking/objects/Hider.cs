@@ -22,6 +22,9 @@ public class Hider : Player {
             case 3:
                 playerAudio.Jump(PlayerAudioType.HIDER_JUMP);
                 break;
+            case 4:
+                //TODO add crouch animation :)
+                break;
         }
     }
 
