@@ -29,23 +29,31 @@ public class NetworkManager : MonoBehaviour {
         socket.On("PlayerDeath", OnPlayerDeath);
 
         socket.On("PlayerMessage", OnPlayerMessage);
+        socket.On("PlayerSeesSeeker", OnPlayerSeesSeeker);
 
         socket.On("SyncDayNightCycle", OnSyncDayNightCycle);
         socket.On("StartDayNightCycle", OnStartDayNightCycle);
         socket.On("StopDayNightCycle", OnStopDayNightCycle);
 
         PlayerMovement.localPlayerMoveEvent += PlayerMoveServer;
-        MouseLook.localPlayerHeadMoveEvent += PlayerMoveHeadServer;
+        SmoothMouseLook.localPlayerHeadMoveEvent += PlayerMoveHeadServer;
     }
 
     private void OnDisable() {
         PlayerMovement.localPlayerMoveEvent -= PlayerMoveServer;
-        MouseLook.localPlayerHeadMoveEvent -= PlayerMoveHeadServer;
+        SmoothMouseLook.localPlayerHeadMoveEvent -= PlayerMoveHeadServer;
     }
 
     /* Send data to the server. */
     public void KillPlayer(string clientId) {
         new PlayerKillBuilder(this.socket, this, clientId);
+    }
+
+    public void PlayerSeesSeeker(bool isSeekerVisible) {
+        new PlayerSeesSeeker(this.socket, this, isSeekerVisible);
+    }
+
+    public void MoveProp(Prop prop, Vector3 positionTo, Quaternion rotationTo) {
     }
 
     private void PlayerJoinServer(SocketIO.SocketIOEvent e) {
@@ -99,6 +107,10 @@ public class NetworkManager : MonoBehaviour {
         new PlayerMessageHandler(e, socket, this);
     }
 
+    private void OnPlayerSeesSeeker(SocketIO.SocketIOEvent e) {
+        new PlayerSeesSeekerHandler(e, socket, this, (Seeker) this.seeker);
+    }
+
     private void ServerClosed(SocketIO.SocketIOEvent e) {
         //This is very temporary ofcourse, just to start a new game real quick :P
         socket.Close();
@@ -127,6 +139,10 @@ public class NetworkManager : MonoBehaviour {
 
     /* GETTERS & SETTERS
      */
+    
+    public void AddProp(Prop prop) {
+        this.entities.Add(prop);
+    }
 
     public void AddOnlinePlayer(Player player) {
         this.entities.Add(player);
@@ -142,8 +158,17 @@ public class NetworkManager : MonoBehaviour {
 
     public Player GetPlayerFromClientId(string clientId) {
         foreach(Entity entity in this.entities) {
-            if (entity is Player && clientId.Equals(entity.ClientId))
+            if (entity is Player && clientId.Equals(((Player) entity).ClientId))
                 return (Player) entity;
+        }
+
+        return null;
+    }
+
+    public Prop GetPropFromObjectId(int objectId) {
+        foreach(Entity entity in this.entities) {
+            if (entity is Prop && objectId.Equals(((Prop)entity).ObjectId))
+                return (Prop) entity;
         }
 
         return null;

@@ -5,7 +5,6 @@ using UnityEngine;
 public abstract class Entity : MonoBehaviour {
 
     protected NetworkManager networkManager;
-    private string clientId;
     private bool alive;
 
     /// <summary>
@@ -13,12 +12,10 @@ public abstract class Entity : MonoBehaviour {
     /// </summary>
     /// <param name="clientId">The clientId of this player's session.</param>
     /// <param name="alive">Wether this entity is alive or not.</param>
-    public void Instantiate(string clientId, NetworkManager networkManager, bool alive) {
-        this.clientId = clientId;
+    public void Instantiate(NetworkManager networkManager, bool alive) {
         this.networkManager = networkManager;
         this.alive = alive;
     }
 
-    public string ClientId { get { return this.clientId; } }
     public bool IsAlive { get { return this.alive; } }
 }

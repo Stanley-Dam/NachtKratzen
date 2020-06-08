@@ -45,13 +45,15 @@ public class Spawner : MonoBehaviour {
                 break;
         }
 
+        player.MoveHead(headRotation);
+
         //Add the camera to this player
         if(isMain) {
             cam = Camera.main.gameObject;
             cam.transform.parent = newPlayer.GetComponent<LocalBodyObjects>().cameraHolder;
             cam.transform.localPosition = new Vector3(0, 0, 0);
 
-            MouseLook mouseLook = cam.AddComponent<MouseLook>();
+            SmoothMouseLook mouseLook = cam.AddComponent<SmoothMouseLook>();
             mouseLook.playerBody = newPlayer.transform;
             mouseLook.playerHead = newPlayer.GetComponent<LocalBodyObjects>().head;
 
@@ -76,7 +78,7 @@ public class Spawner : MonoBehaviour {
 
     private void DeSpawnPlayer(Player player) {
         if (player.IsMainPlayer) {
-            cam.gameObject.GetComponent<MouseLook>().enabled = false;
+            cam.gameObject.GetComponent<SmoothMouseLook>().enabled = false;
         }
 
         Destroy(player.gameObject);
@@ -93,7 +95,7 @@ public class Spawner : MonoBehaviour {
         Destroy(player.gameObject);
 
         if(setCam) {
-            cam.gameObject.GetComponent<MouseLook>().enabled = false;
+            cam.gameObject.GetComponent<SmoothMouseLook>().enabled = false;
 
             Player selectedPlayer = networkManager.seeker;
 
