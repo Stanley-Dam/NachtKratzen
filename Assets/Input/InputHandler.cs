@@ -168,6 +168,33 @@ public class @InputHandler : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""keyboard"",
+            ""id"": ""c201ed42-f991-46f5-9445-ef0ae908907c"",
+            ""actions"": [
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""7ff1fcba-de9a-4d0b-ba06-24109ad30011"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""f1fa3683-407a-4f75-8056-a3af4a6d0fd6"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -181,6 +208,9 @@ public class @InputHandler : IInputActionCollection, IDisposable
         // pickup
         m_pickup = asset.FindActionMap("pickup", throwIfNotFound: true);
         m_pickup_Click = m_pickup.FindAction("Click", throwIfNotFound: true);
+        // keyboard
+        m_keyboard = asset.FindActionMap("keyboard", throwIfNotFound: true);
+        m_keyboard_Pause = m_keyboard.FindAction("Pause", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -316,6 +346,39 @@ public class @InputHandler : IInputActionCollection, IDisposable
         }
     }
     public PickupActions @pickup => new PickupActions(this);
+
+    // keyboard
+    private readonly InputActionMap m_keyboard;
+    private IKeyboardActions m_KeyboardActionsCallbackInterface;
+    private readonly InputAction m_keyboard_Pause;
+    public struct KeyboardActions
+    {
+        private @InputHandler m_Wrapper;
+        public KeyboardActions(@InputHandler wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Pause => m_Wrapper.m_keyboard_Pause;
+        public InputActionMap Get() { return m_Wrapper.m_keyboard; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(KeyboardActions set) { return set.Get(); }
+        public void SetCallbacks(IKeyboardActions instance)
+        {
+            if (m_Wrapper.m_KeyboardActionsCallbackInterface != null)
+            {
+                @Pause.started -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnPause;
+                @Pause.performed -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnPause;
+                @Pause.canceled -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnPause;
+            }
+            m_Wrapper.m_KeyboardActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Pause.started += instance.OnPause;
+                @Pause.performed += instance.OnPause;
+                @Pause.canceled += instance.OnPause;
+            }
+        }
+    }
+    public KeyboardActions @keyboard => new KeyboardActions(this);
     public interface IMovementActions
     {
         void OnMove(InputAction.CallbackContext context);
@@ -326,5 +389,9 @@ public class @InputHandler : IInputActionCollection, IDisposable
     public interface IPickupActions
     {
         void OnClick(InputAction.CallbackContext context);
+    }
+    public interface IKeyboardActions
+    {
+        void OnPause(InputAction.CallbackContext context);
     }
 }
