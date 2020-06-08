@@ -49,6 +49,14 @@ public class @InputHandler : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Crouch"",
+                    ""type"": ""Button"",
+                    ""id"": ""3cc2be78-74af-4a89-a6a4-50e92f1d419c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -139,6 +147,17 @@ public class @InputHandler : IInputActionCollection, IDisposable
                     ""action"": ""MouseLook"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""785739ea-f9e4-4c9a-bd83-f271135bfd01"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -178,6 +197,7 @@ public class @InputHandler : IInputActionCollection, IDisposable
         m_movement_Sprint = m_movement.FindAction("Sprint", throwIfNotFound: true);
         m_movement_Jump = m_movement.FindAction("Jump", throwIfNotFound: true);
         m_movement_MouseLook = m_movement.FindAction("MouseLook", throwIfNotFound: true);
+        m_movement_Crouch = m_movement.FindAction("Crouch", throwIfNotFound: true);
         // pickup
         m_pickup = asset.FindActionMap("pickup", throwIfNotFound: true);
         m_pickup_Click = m_pickup.FindAction("Click", throwIfNotFound: true);
@@ -234,6 +254,7 @@ public class @InputHandler : IInputActionCollection, IDisposable
     private readonly InputAction m_movement_Sprint;
     private readonly InputAction m_movement_Jump;
     private readonly InputAction m_movement_MouseLook;
+    private readonly InputAction m_movement_Crouch;
     public struct MovementActions
     {
         private @InputHandler m_Wrapper;
@@ -242,6 +263,7 @@ public class @InputHandler : IInputActionCollection, IDisposable
         public InputAction @Sprint => m_Wrapper.m_movement_Sprint;
         public InputAction @Jump => m_Wrapper.m_movement_Jump;
         public InputAction @MouseLook => m_Wrapper.m_movement_MouseLook;
+        public InputAction @Crouch => m_Wrapper.m_movement_Crouch;
         public InputActionMap Get() { return m_Wrapper.m_movement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -263,6 +285,9 @@ public class @InputHandler : IInputActionCollection, IDisposable
                 @MouseLook.started -= m_Wrapper.m_MovementActionsCallbackInterface.OnMouseLook;
                 @MouseLook.performed -= m_Wrapper.m_MovementActionsCallbackInterface.OnMouseLook;
                 @MouseLook.canceled -= m_Wrapper.m_MovementActionsCallbackInterface.OnMouseLook;
+                @Crouch.started -= m_Wrapper.m_MovementActionsCallbackInterface.OnCrouch;
+                @Crouch.performed -= m_Wrapper.m_MovementActionsCallbackInterface.OnCrouch;
+                @Crouch.canceled -= m_Wrapper.m_MovementActionsCallbackInterface.OnCrouch;
             }
             m_Wrapper.m_MovementActionsCallbackInterface = instance;
             if (instance != null)
@@ -279,6 +304,9 @@ public class @InputHandler : IInputActionCollection, IDisposable
                 @MouseLook.started += instance.OnMouseLook;
                 @MouseLook.performed += instance.OnMouseLook;
                 @MouseLook.canceled += instance.OnMouseLook;
+                @Crouch.started += instance.OnCrouch;
+                @Crouch.performed += instance.OnCrouch;
+                @Crouch.canceled += instance.OnCrouch;
             }
         }
     }
@@ -322,6 +350,7 @@ public class @InputHandler : IInputActionCollection, IDisposable
         void OnSprint(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnMouseLook(InputAction.CallbackContext context);
+        void OnCrouch(InputAction.CallbackContext context);
     }
     public interface IPickupActions
     {

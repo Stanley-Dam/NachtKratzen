@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 public class PlayerMovement : MonoBehaviour {
 
@@ -22,6 +23,7 @@ public class PlayerMovement : MonoBehaviour {
     private bool isGrounded = false;
     private bool jumping = false;
     private bool isSprinting = false;
+    private bool isCrouching = false;
     private MovementType movementType = MovementType.IDLE;
     private Vector3 positionLastFrame = new Vector3(0, 0);
 
@@ -29,13 +31,15 @@ public class PlayerMovement : MonoBehaviour {
     [SerializeField] private PlayerTypes playerType;
 
     [SerializeField] private Transform groundCheck;
-    [SerializeField] private float groundDistance = 0.4f;
+    [SerializeField] private float groundDistance = 2.5f;
     [SerializeField] private LayerMask groundMask;
 
-    [SerializeField] private float normalSpeed = 2f;
-    [SerializeField] private float sprintSpeed = 5f;
-    [SerializeField] private float gravity = -9.18f;
-    [SerializeField] private float jumpHeight = 2f;
+    [SerializeField] private float crouchSpeed = 5f;
+    [SerializeField] private float normalSpeed = 20f;
+    [SerializeField] private float sprintSpeed = 50f;
+    [SerializeField] private float gravity = -90f;
+    [SerializeField] private float jumpHeight = 12f;
+    [SerializeField] private float crouchCameraShift = 0.4f;
 
     private void Awake() {
         controls = new InputHandler();
@@ -45,6 +49,20 @@ public class PlayerMovement : MonoBehaviour {
         controls.movement.Jump.canceled += ctx => jumping = false;
         controls.movement.Sprint.performed += ctx => isSprinting = true;
         controls.movement.Sprint.canceled += ctx => isSprinting = false;
+
+        controls.movement.Crouch.performed += ctx => {
+            isCrouching = true;
+
+            //Shift the camera down a bit for good player feedback
+            localBodyObjects.cameraHolder.localPosition += new Vector3(0, -crouchCameraShift);
+        };
+
+        controls.movement.Crouch.canceled += ctx => {
+            isCrouching = false;
+
+            //Set the camera back to it's normal position
+            localBodyObjects.cameraHolder.localPosition += new Vector3(0, crouchCameraShift);
+        };
 
         character = this.GetComponent<CharacterController>();
         //We can't do anything without a rigidbody, so just disable this object when we can't find it :P
@@ -93,8 +111,12 @@ public class PlayerMovement : MonoBehaviour {
         direction3d = transform.right * direction3d.x + transform.forward * direction3d.z;
 
         float speed = normalSpeed;
-        if (isSprinting)
+
+        if (isCrouching) {
+            speed = crouchSpeed;
+        } else if (isSprinting) {
             speed = sprintSpeed;
+        }
 
         character.Move(direction3d * speed * Time.deltaTime);
 
@@ -102,10 +124,12 @@ public class PlayerMovement : MonoBehaviour {
         if (speed == normalSpeed) {
             movementType = MovementType.WALKING;
             playerAudio.Walk(PlayerAudioType.GetWalkByPlayerType(this.playerType));
-        } else {
+        } else if(isSprinting) {
             movementType = MovementType.RUNNING;
             playerAudio.Walk(PlayerAudioType.GetRunByPlayerType(this.playerType));
         }
+
+        //We don't need to handle player crouching sound because you don't make any sound when crouching ;)
     }
 
     private void Jump() {
