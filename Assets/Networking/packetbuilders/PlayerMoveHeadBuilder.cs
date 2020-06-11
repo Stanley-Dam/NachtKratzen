@@ -11,10 +11,15 @@ public class PlayerMoveHeadBuilder : PacketBuilder {
     /// <param name="socketId">The socketId of the moving player</param>
     /// <param name="headRotation">The rotation where the player is moving to</param>
     public PlayerMoveHeadBuilder(SocketIO.SocketIOComponent socket, NetworkManager networkManager,
-        string socketId, Quaternion headRotation) :
+        string socketId, Quaternion headRotation, Quaternion bodyRotation) :
         base(socket, networkManager, "PlayerMoveHead") {
 
         data["socketId"] = socketId;
+
+        data["bodyRotationX"] = PacketUtils.ToPacketString(bodyRotation.x);
+        data["bodyRotationY"] = PacketUtils.ToPacketString(bodyRotation.y);
+        data["bodyRotationZ"] = PacketUtils.ToPacketString(bodyRotation.z);
+        data["bodyRotationW"] = PacketUtils.ToPacketString(bodyRotation.w);
 
         data["headRotationX"] = PacketUtils.ToPacketString(headRotation.x);
         data["headRotationY"] = PacketUtils.ToPacketString(headRotation.y);
