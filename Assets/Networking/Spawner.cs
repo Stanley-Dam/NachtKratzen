@@ -45,8 +45,6 @@ public class Spawner : MonoBehaviour {
                 break;
         }
 
-        player.MoveHead(headRotation);
-
         //Add the camera to this player
         if (player.IsMainPlayer) {
             camera.transform.parent = newPlayer.GetComponent<LocalBodyObjects>().cameraHolder;

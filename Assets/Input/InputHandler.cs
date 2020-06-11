@@ -51,14 +51,6 @@ public class @InputHandler : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Quit"",
-                    ""type"": ""Button"",
-                    ""id"": ""7d1d99b9-288e-4862-813c-dec5681b7deb"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
                     ""name"": ""Crouch"",
                     ""type"": ""Button"",
                     ""id"": ""d5cf734d-3c16-4bc6-99e4-4bd016fef2e4"",
@@ -158,17 +150,6 @@ public class @InputHandler : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""b186fd3d-e9be-42d9-996f-85ea1c2e649f"",
-                    ""path"": ""<Keyboard>/escape"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Quit"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""81baddd0-39d6-4731-84ef-23f74bea6194"",
                     ""path"": ""<Keyboard>/ctrl"",
                     ""interactions"": """",
@@ -206,6 +187,33 @@ public class @InputHandler : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""keyboard"",
+            ""id"": ""b4b520ee-1623-41f2-bdb8-986804ea0e99"",
+            ""actions"": [
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""570425ae-b4ae-447e-98c6-1c8af944e232"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""0535c6be-d9d3-4f6c-b8e1-55ddf831ee97"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -216,11 +224,13 @@ public class @InputHandler : IInputActionCollection, IDisposable
         m_movement_Sprint = m_movement.FindAction("Sprint", throwIfNotFound: true);
         m_movement_Jump = m_movement.FindAction("Jump", throwIfNotFound: true);
         m_movement_MouseLook = m_movement.FindAction("MouseLook", throwIfNotFound: true);
-        m_movement_Quit = m_movement.FindAction("Quit", throwIfNotFound: true);
         m_movement_Crouch = m_movement.FindAction("Crouch", throwIfNotFound: true);
         // pickup
         m_pickup = asset.FindActionMap("pickup", throwIfNotFound: true);
         m_pickup_Click = m_pickup.FindAction("Click", throwIfNotFound: true);
+        // keyboard
+        m_keyboard = asset.FindActionMap("keyboard", throwIfNotFound: true);
+        m_keyboard_Pause = m_keyboard.FindAction("Pause", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -274,7 +284,6 @@ public class @InputHandler : IInputActionCollection, IDisposable
     private readonly InputAction m_movement_Sprint;
     private readonly InputAction m_movement_Jump;
     private readonly InputAction m_movement_MouseLook;
-    private readonly InputAction m_movement_Quit;
     private readonly InputAction m_movement_Crouch;
     public struct MovementActions
     {
@@ -284,7 +293,6 @@ public class @InputHandler : IInputActionCollection, IDisposable
         public InputAction @Sprint => m_Wrapper.m_movement_Sprint;
         public InputAction @Jump => m_Wrapper.m_movement_Jump;
         public InputAction @MouseLook => m_Wrapper.m_movement_MouseLook;
-        public InputAction @Quit => m_Wrapper.m_movement_Quit;
         public InputAction @Crouch => m_Wrapper.m_movement_Crouch;
         public InputActionMap Get() { return m_Wrapper.m_movement; }
         public void Enable() { Get().Enable(); }
@@ -307,9 +315,6 @@ public class @InputHandler : IInputActionCollection, IDisposable
                 @MouseLook.started -= m_Wrapper.m_MovementActionsCallbackInterface.OnMouseLook;
                 @MouseLook.performed -= m_Wrapper.m_MovementActionsCallbackInterface.OnMouseLook;
                 @MouseLook.canceled -= m_Wrapper.m_MovementActionsCallbackInterface.OnMouseLook;
-                @Quit.started -= m_Wrapper.m_MovementActionsCallbackInterface.OnQuit;
-                @Quit.performed -= m_Wrapper.m_MovementActionsCallbackInterface.OnQuit;
-                @Quit.canceled -= m_Wrapper.m_MovementActionsCallbackInterface.OnQuit;
                 @Crouch.started -= m_Wrapper.m_MovementActionsCallbackInterface.OnCrouch;
                 @Crouch.performed -= m_Wrapper.m_MovementActionsCallbackInterface.OnCrouch;
                 @Crouch.canceled -= m_Wrapper.m_MovementActionsCallbackInterface.OnCrouch;
@@ -329,9 +334,6 @@ public class @InputHandler : IInputActionCollection, IDisposable
                 @MouseLook.started += instance.OnMouseLook;
                 @MouseLook.performed += instance.OnMouseLook;
                 @MouseLook.canceled += instance.OnMouseLook;
-                @Quit.started += instance.OnQuit;
-                @Quit.performed += instance.OnQuit;
-                @Quit.canceled += instance.OnQuit;
                 @Crouch.started += instance.OnCrouch;
                 @Crouch.performed += instance.OnCrouch;
                 @Crouch.canceled += instance.OnCrouch;
@@ -372,17 +374,53 @@ public class @InputHandler : IInputActionCollection, IDisposable
         }
     }
     public PickupActions @pickup => new PickupActions(this);
+
+    // keyboard
+    private readonly InputActionMap m_keyboard;
+    private IKeyboardActions m_KeyboardActionsCallbackInterface;
+    private readonly InputAction m_keyboard_Pause;
+    public struct KeyboardActions
+    {
+        private @InputHandler m_Wrapper;
+        public KeyboardActions(@InputHandler wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Pause => m_Wrapper.m_keyboard_Pause;
+        public InputActionMap Get() { return m_Wrapper.m_keyboard; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(KeyboardActions set) { return set.Get(); }
+        public void SetCallbacks(IKeyboardActions instance)
+        {
+            if (m_Wrapper.m_KeyboardActionsCallbackInterface != null)
+            {
+                @Pause.started -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnPause;
+                @Pause.performed -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnPause;
+                @Pause.canceled -= m_Wrapper.m_KeyboardActionsCallbackInterface.OnPause;
+            }
+            m_Wrapper.m_KeyboardActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Pause.started += instance.OnPause;
+                @Pause.performed += instance.OnPause;
+                @Pause.canceled += instance.OnPause;
+            }
+        }
+    }
+    public KeyboardActions @keyboard => new KeyboardActions(this);
     public interface IMovementActions
     {
         void OnMove(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnMouseLook(InputAction.CallbackContext context);
-        void OnQuit(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
     }
     public interface IPickupActions
     {
         void OnClick(InputAction.CallbackContext context);
+    }
+    public interface IKeyboardActions
+    {
+        void OnPause(InputAction.CallbackContext context);
     }
 }

@@ -11,7 +11,7 @@ public class MouseLook : MonoBehaviour {
      */
 
     //These are public so that the player can eventually change them in their settings.
-    public float mouseSensitivity = 5f;
+    public float mouseSensitivity = 7f;
 
     private Vector2 look = new Vector2();
     private float xRotation = 0f;

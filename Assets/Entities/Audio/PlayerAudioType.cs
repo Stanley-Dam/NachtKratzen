@@ -9,7 +9,7 @@ public class PlayerAudioType {
     public static readonly PlayerAudioType DEAD = new PlayerAudioType(0, new string[] { "Dead/Dead_1", "Dead/Dead_2", "Dead/Dead_3", "Dead/Dead_4", "Dead/Dead_5" });
     public static readonly PlayerAudioType END = new PlayerAudioType(1, new string[] { "End/End" });
     public static readonly PlayerAudioType HIDER_SEES_SEEKER = new PlayerAudioType(2, new string[] { "Hider_sees_seeker/Hider_sees_seeker_1", "Hider_sees_seeker/Hider_sees_seeker_2", "Hider_sees_seeker/Hider_sees_seeker_3", "Hider_sees_seeker/Hider_sees_seeker_4" });
-    public static readonly PlayerAudioType HIDER_JUMP = new PlayerAudioType(3, new string[] { "Jump/Jump_1", "Jump/Jump_2", "Jump/Jump_3", "Jump/Jump_4" });
+    public static readonly PlayerAudioType HIDER_JUMP = new PlayerAudioType(3, new string[] { "Jump/Jump_1" });
     public static readonly PlayerAudioType HIDER_RUN = new PlayerAudioType(4, new string[] { "Run/Run_1", "Run/Run_2", "Run/Run_3", "Run/Run_4", "Run/Run_5", "Run/Run_6" });
     public static readonly PlayerAudioType SEEKER_JUMP = new PlayerAudioType(5, new string[] { "Seeker_jump/Seeker_jump_1", "Seeker_jump/Seeker_jump_2", "Seeker_jump/Seeker_jump_3", "Seeker_jump/Seeker_jump_4" });
     public static readonly PlayerAudioType SEEKER_RELEASED = new PlayerAudioType(6, new string[] { "Seeker_released/Seeker_released" });

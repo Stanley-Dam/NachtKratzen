@@ -25,12 +25,26 @@ public class SmoothMouseLook : MonoBehaviour {
 	private void Awake() {
 		controls = new InputHandler();
 		controls.movement.Enable();
+		PauseMenu.pauseEvent += Pause;
 	}
 
 	private void OnDisable() {
 		controls.movement.Disable();
 		Cursor.lockState = CursorLockMode.None;
 		Cursor.visible = true;
+		PauseMenu.pauseEvent -= Pause;
+	}
+
+	private void Pause(bool pause) {
+		if(pause) {
+			controls.movement.Disable();
+			Cursor.lockState = CursorLockMode.None;
+			Cursor.visible = true;
+		} else {
+			controls.movement.Enable();
+			Cursor.lockState = CursorLockMode.Locked;
+			Cursor.visible = false;
+		}
 	}
 
 	private void Update() {

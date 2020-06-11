@@ -67,6 +67,8 @@ public class PlayerMovement : MonoBehaviour {
         character = this.GetComponent<CharacterController>();
         //We can't do anything without a rigidbody, so just disable this object when we can't find it :P
         this.enabled = character;
+
+        PauseMenu.pauseEvent += Pause;
     }
 
     private void OnEnable() {
@@ -75,6 +77,14 @@ public class PlayerMovement : MonoBehaviour {
 
     private void OnDisable() {
         controls.movement.Disable();
+        PauseMenu.pauseEvent -= Pause;
+    }
+
+    private void Pause(bool pause) {
+        if(pause)
+            controls.movement.Disable();
+        else
+            controls.movement.Enable();
     }
 
     private void Update() {
