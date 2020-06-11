@@ -13,6 +13,16 @@ public class NetworkManager : MonoBehaviour {
     private List<Entity> entities = new List<Entity>();
     private bool joined = false;
 
+    private static NetworkManager networkManager;
+    public static NetworkManager Instance { get { return networkManager; } }
+
+    private void Awake() {
+        if (networkManager == null)
+            networkManager = this;
+        else
+            Destroy(this);
+    }
+
     // Start is called before the first frame update
     private void Start() {
         //Start listening to all the server events
@@ -27,9 +37,12 @@ public class NetworkManager : MonoBehaviour {
         socket.On("PlayerTeleport", OnPlayerTeleport);
         socket.On("UpdateSeeker", OnSeekerUpdate);
         socket.On("PlayerDeath", OnPlayerDeath);
+        socket.On("PropMove", OnPropMove);
 
+        socket.On("TimeLeftSync", OnTimeLeftSync);
         socket.On("PlayerMessage", OnPlayerMessage);
         socket.On("PlayerSeesSeeker", OnPlayerSeesSeeker);
+        socket.On("HiderCountSync", OnHiderCountSync);
 
         socket.On("SyncDayNightCycle", OnSyncDayNightCycle);
         socket.On("StartDayNightCycle", OnStartDayNightCycle);
@@ -50,10 +63,11 @@ public class NetworkManager : MonoBehaviour {
     }
 
     public void PlayerSeesSeeker(bool isSeekerVisible) {
-        new PlayerSeesSeeker(this.socket, this, isSeekerVisible);
+        new PlayerSeesSeekerBuilder(this.socket, this, isSeekerVisible);
     }
 
     public void MoveProp(Prop prop, Vector3 positionTo, Quaternion rotationTo) {
+        new PropMoveBuilder(socket, this, prop.ObjectId, prop.isPickedUp, socket.sid, positionTo, rotationTo);
     }
 
     private void PlayerJoinServer(SocketIO.SocketIOEvent e) {
@@ -65,8 +79,8 @@ public class NetworkManager : MonoBehaviour {
         new MovePlayerBuilder(socket, this, socket.sid, destination, (int) movementType);
     }
 
-    private void PlayerMoveHeadServer(Quaternion headRotation) {
-        new PlayerMoveHeadBuilder(socket, this, socket.sid, headRotation);
+    private void PlayerMoveHeadServer(Quaternion headRotation, Quaternion bodyRotation) {
+        new PlayerMoveHeadBuilder(socket, this, socket.sid, headRotation, bodyRotation);
     }
 
     /* Receive data from the server */
@@ -103,12 +117,24 @@ public class NetworkManager : MonoBehaviour {
         new PlayerDeath(e, socket, this);
     }
 
+    private void OnHiderCountSync(SocketIO.SocketIOEvent e) {
+        new HiderCountSync(e, socket, this);
+    }
+
+    private void OnTimeLeftSync(SocketIO.SocketIOEvent e) {
+        new TimeLeftSync(e, socket, this);
+    }
+
     private void OnPlayerMessage(SocketIO.SocketIOEvent e) {
         new PlayerMessageHandler(e, socket, this);
     }
 
     private void OnPlayerSeesSeeker(SocketIO.SocketIOEvent e) {
         new PlayerSeesSeekerHandler(e, socket, this, (Seeker) this.seeker);
+    }
+
+    private void OnPropMove(SocketIO.SocketIOEvent e) {
+        new PropMoveHandler(e, socket, this);
     }
 
     private void ServerClosed(SocketIO.SocketIOEvent e) {
@@ -165,7 +191,7 @@ public class NetworkManager : MonoBehaviour {
         return null;
     }
 
-    public Prop GetPropFromObjectId(int objectId) {
+    public Prop GetPropFromObjectId(string objectId) {
         foreach(Entity entity in this.entities) {
             if (entity is Prop && objectId.Equals(((Prop)entity).ObjectId))
                 return (Prop) entity;

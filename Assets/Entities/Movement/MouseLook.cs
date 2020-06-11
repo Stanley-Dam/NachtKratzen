@@ -17,8 +17,8 @@ public class MouseLook : MonoBehaviour {
     private float xRotation = 0f;
     private InputHandler controls;
 
+    public LocalBodyObjects localBodyObjects;
     public Transform playerBody;
-    public Transform playerHead;
 
     private void Awake() {
         controls = new InputHandler();
@@ -51,11 +51,11 @@ public class MouseLook : MonoBehaviour {
 
         transform.localRotation = Quaternion.Euler(xRotation, 0, 0);
         playerBody.Rotate(Vector3.up * look.x);
-        playerHead.localRotation = transform.localRotation;
+        localBodyObjects.headRotation = transform.localRotation;
 
         if(transform.rotation != prevHeadRotation) {
             if(localPlayerHeadMoveEvent != null)
-                localPlayerHeadMoveEvent(playerHead.rotation);
+                localPlayerHeadMoveEvent(localBodyObjects.headRotation);
         }
     }
 

@@ -24,28 +24,52 @@ public class Seeker : Player {
             this.networkManager.PlayerSeesSeeker(isSeekerVisible);
     }
 
+    public void PlayPlayerKillAnimation() {
+        animator.SetBool("Attack", true);
+        StartCoroutine("KillAnimationCooldown");
+    }
+
+    private IEnumerator KillAnimationCooldown() {
+        yield return new WaitForSeconds(1f);
+        animator.SetBool("Attack", false);
+
+        StopCoroutine("KillAnimationCooldown");
+        yield return null;
+    }
+
     protected override void MoveHandler(int movementType) {
-        //Play audio :)
+        //Play audio and animations :)
         switch (movementType) {
             case 0:
+                animator.SetBool("IsJumping", false);
+                animator.SetFloat("Speed", 0f);
                 break;
             case 1:
+                animator.SetBool("IsJumping", false);
+                animator.SetFloat("Speed", 0.5f);
                 playerAudio.Walk(PlayerAudioType.SEEKER_WALK);
                 break;
             case 2:
+                animator.SetBool("IsJumping", false);
+                animator.SetFloat("Speed", 1f);
                 playerAudio.Walk(PlayerAudioType.SEEKER_RUN);
                 break;
             case 3:
-                playerAudio.Jump(PlayerAudioType.SEEKER_JUMP);
                 break;
             case 4:
-                //TODO add the crouch animation ;)
+                animator.SetBool("IsJumping", true);
+                playerAudio.Jump(PlayerAudioType.SEEKER_JUMP);
+                break;
+            case 5:
+                animator.SetFloat("Speed", 0f);
+                break;
+            case 6:
+                animator.SetFloat("Speed", 0.5f);
                 break;
         }
     }
 
     public void PlayerSeesSeekerHandler(bool isVisible, Hider hider) {
-        Debug.Log("test: " + isVisible);
         if(isVisible && this.IsMainPlayer) {
             IndicatorSystem.CreateIndicator(hider, this.transform);
         }

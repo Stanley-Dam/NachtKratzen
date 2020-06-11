@@ -7,7 +7,7 @@ public class Spawner : MonoBehaviour {
     [SerializeField] private NetworkManager networkManager;
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject seekerPrefab;
-    [SerializeField] private GameObject cam;
+    [SerializeField] private new Camera camera;
 
     [SerializeField] private int mainPlayerLayer = 9;
 
@@ -31,13 +31,13 @@ public class Spawner : MonoBehaviour {
 
         switch (playerTypeId) {
             case 0:
-                newPlayer = Instantiate(playerPrefab, spawnLocation, Quaternion.Euler(0, 0, 0));
+                newPlayer = Instantiate(playerPrefab, spawnLocation, new Quaternion());
                 Hider hider = newPlayer.AddComponent<Hider>();
                 hider.Instantiate(clientId, networkManager, true, isMain);
                 player = hider;
                 break;
             case 1:
-                newPlayer = Instantiate(seekerPrefab, spawnLocation, Quaternion.Euler(0, 0, 0));
+                newPlayer = Instantiate(seekerPrefab, spawnLocation, new Quaternion());
                 Seeker seeker = newPlayer.AddComponent<Seeker>();
                 seeker.Instantiate(clientId, networkManager, true, isMain);
                 player = seeker;
@@ -45,17 +45,14 @@ public class Spawner : MonoBehaviour {
                 break;
         }
 
-        player.MoveHead(headRotation);
-
         //Add the camera to this player
-        if(isMain) {
-            cam = Camera.main.gameObject;
-            cam.transform.parent = newPlayer.GetComponent<LocalBodyObjects>().cameraHolder;
-            cam.transform.localPosition = new Vector3(0, 0, 0);
+        if (player.IsMainPlayer) {
+            camera.transform.parent = newPlayer.GetComponent<LocalBodyObjects>().cameraHolder;
+            camera.transform.localPosition = new Vector3(0, 0, 0);
 
-            SmoothMouseLook mouseLook = cam.AddComponent<SmoothMouseLook>();
+            SmoothMouseLook mouseLook = camera.gameObject.AddComponent<SmoothMouseLook>();
             mouseLook.playerBody = newPlayer.transform;
-            mouseLook.playerHead = newPlayer.GetComponent<LocalBodyObjects>().head;
+            mouseLook.localBodyObjects = newPlayer.GetComponent<LocalBodyObjects>();
 
             foreach (Transform child in newPlayer.GetComponentsInChildren<Transform>(true)) {
                 child.gameObject.layer = mainPlayerLayer;
@@ -68,40 +65,51 @@ public class Spawner : MonoBehaviour {
     private void SetSeeker(Player player) {
         string clientId = player.ClientId;
         Vector3 location = player.transform.position;
-        Quaternion headRotation = player.gameObject.GetComponent<LocalBodyObjects>().head.rotation;
+        Quaternion headRotation = player.gameObject.GetComponent<LocalBodyObjects>().headRotation;
         bool isMain = player.IsMainPlayer;
 
         DeSpawnPlayer(player);
-        networkManager.RemoveOnlinePlayer(player);
         SpawnPlayer(clientId, location, headRotation, 1, isMain);
+        networkManager.RemoveOnlinePlayer(player);
     }
 
     private void DeSpawnPlayer(Player player) {
         if (player.IsMainPlayer) {
-            cam.gameObject.GetComponent<SmoothMouseLook>().enabled = false;
+            Destroy(camera.gameObject.GetComponent<SmoothMouseLook>());
+            camera.transform.parent = null;
         }
 
         Destroy(player.gameObject);
     }
 
     private void PlayerDeathHandler(Player player) {
+        if (player is Hider)
+            ((Hider)player).PlayDeathAnimation();
+
         bool setCam = false;
         if (player.IsMainPlayer) {
-            cam.transform.parent = null;
+            camera.transform.parent = null;
             setCam = true;
+            Destroy(player.gameObject.GetComponent<PlayerMovement>());
+            foreach (Transform child in player.gameObject.GetComponentsInChildren<Transform>(true)) {
+                child.gameObject.layer = 0;
+            }
         }
 
         networkManager.RemoveOnlinePlayer(player);
-        Destroy(player.gameObject);
+        Destroy(player.gameObject.GetComponent<CharacterController>());
+        Destroy(player.gameObject.GetComponent<CapsuleCollider>());
+        Destroy(player.gameObject.GetComponent<LocalBodyObjects>());
+        Destroy(player);
 
-        if(setCam) {
-            cam.gameObject.GetComponent<SmoothMouseLook>().enabled = false;
+        if (setCam) {
+            camera.gameObject.GetComponent<SmoothMouseLook>().enabled = false;
 
             Player selectedPlayer = networkManager.seeker;
 
-            cam.transform.parent = selectedPlayer.gameObject.GetComponent<LocalBodyObjects>().head;
-            cam.transform.localPosition = new Vector3(0, 0, 0);
-            cam.transform.localRotation = Quaternion.Euler(0, 0, 0);
+            camera.transform.parent = selectedPlayer.gameObject.GetComponent<LocalBodyObjects>().head;
+            camera.transform.localPosition = new Vector3(0, 0, 0);
+            camera.transform.localRotation = Quaternion.Euler(-60, -90, 0);
 
             foreach (Transform child in selectedPlayer.gameObject.GetComponentsInChildren<Transform>(true)) {
                 child.gameObject.layer = mainPlayerLayer;

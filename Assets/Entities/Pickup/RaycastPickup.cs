@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class RaycastPickup : MonoBehaviour
-{
+public class RaycastPickup : MonoBehaviour {
     public delegate void FoundPlayerEvent(GameObject player);
     public static event FoundPlayerEvent foundPlayerEvent;
 
@@ -36,7 +35,7 @@ public class RaycastPickup : MonoBehaviour
 
         //rayLine.SetPosition(0, cameraPos.position);
 
-        if (Physics.Raycast(bodyObjects.head.position, bodyObjects.head.forward, out hit, range)) {
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, range)) {
             //rayLine.SetPosition(1, hit.point);
             //when ray collides with an gameobject it moves all parents and children as the grabby hand children
             //call found player event

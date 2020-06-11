@@ -99,9 +99,13 @@ public class PlayerMovement : MonoBehaviour {
             positionLastFrame = this.transform.position;
             if (localPlayerMoveEvent != null)
                 localPlayerMoveEvent(transform.position, movementType);
-        } else if(movementType != MovementType.IDLE) {
+        } else if(movementType != MovementType.IDLE && !isCrouching) {
             movementType = MovementType.IDLE;
             if(localPlayerMoveEvent != null)
+                localPlayerMoveEvent(transform.position, movementType);
+        } else if(isCrouching && movementType != MovementType.CROUCHING_IDLE) {
+            movementType = MovementType.CROUCHING_IDLE;
+            if (localPlayerMoveEvent != null)
                 localPlayerMoveEvent(transform.position, movementType);
         }
     }
@@ -114,13 +118,19 @@ public class PlayerMovement : MonoBehaviour {
 
         if (isCrouching) {
             speed = crouchSpeed;
-        } else if (isSprinting) {
+        } else if (isSprinting && direction.y > 0) {
             speed = sprintSpeed;
         }
 
         character.Move(direction3d * speed * Time.deltaTime);
 
         //Audio
+        if(direction.y < 0 && !isCrouching) {
+            movementType = MovementType.BACKWARDS_WALKING;
+            playerAudio.Walk(PlayerAudioType.GetWalkByPlayerType(this.playerType));
+            return;
+        }
+
         if (speed == normalSpeed) {
             movementType = MovementType.WALKING;
             playerAudio.Walk(PlayerAudioType.GetWalkByPlayerType(this.playerType));
@@ -128,7 +138,7 @@ public class PlayerMovement : MonoBehaviour {
             movementType = MovementType.RUNNING;
             playerAudio.Walk(PlayerAudioType.GetRunByPlayerType(this.playerType));
         } else if(isCrouching) {
-            movementType = MovementType.CROUCHING;
+            movementType = MovementType.CROUCHING_WALK;
         }
     }
 

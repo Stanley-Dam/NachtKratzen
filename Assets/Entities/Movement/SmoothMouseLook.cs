@@ -9,11 +9,11 @@ using System.Collections.Generic;
 [AddComponentMenu("Camera-Control/Smooth Mouse Look")]
 public class SmoothMouseLook : MonoBehaviour {
 
-	public delegate void LocalPlayerMoveEvent(Quaternion headRotation);
+	public delegate void LocalPlayerMoveEvent(Quaternion headRotation, Quaternion bodyRotation);
 	public static event LocalPlayerMoveEvent localPlayerHeadMoveEvent;
 
+	public LocalBodyObjects localBodyObjects;
 	public Transform playerBody;
-	public Transform playerHead;
 
 	private InputHandler controls;
 
@@ -24,9 +24,6 @@ public class SmoothMouseLook : MonoBehaviour {
 
 	private void Awake() {
 		controls = new InputHandler();
-	}
-
-	private void OnEnable() {
 		controls.movement.Enable();
 	}
 
@@ -50,10 +47,10 @@ public class SmoothMouseLook : MonoBehaviour {
 
 		transform.localRotation = Quaternion.Euler(xRotation, 0, 0);
 		playerBody.Rotate(Vector3.up * look.x);
-		playerHead.localRotation = transform.localRotation;
+		localBodyObjects.headRotation = transform.localRotation;
 
 		if (localPlayerHeadMoveEvent != null)
-			localPlayerHeadMoveEvent(playerHead.rotation);
+			localPlayerHeadMoveEvent(localBodyObjects.headRotation, playerBody.localRotation);
 	}
 
 	private void Start() {

@@ -28,6 +28,9 @@ class PlayerDeath : PacketHandler, PacketHandlerInterface {
     }
 
     public void HandlePacket() {
+        if(!networkManager.seeker.IsMainPlayer)
+            ((Seeker)networkManager.seeker).PlayPlayerKillAnimation();
+
         playerDeathEvent(networkManager.GetPlayerFromClientId(this.clientId));
     }
 }
