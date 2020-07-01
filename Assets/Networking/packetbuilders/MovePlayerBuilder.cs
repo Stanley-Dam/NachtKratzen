@@ -15,9 +15,8 @@ class MovePlayerBuilder : PacketBuilder {
     /// <param name="networkManager">The networkmanager</param>
     /// <param name="socketId">The socketId of the moving player</param>
     /// <param name="posTo">The position where the player is moving to</param>
-    /// <param name="rotation">The head-rotation of the player</param>
     public MovePlayerBuilder(SocketIO.SocketIOComponent socket, NetworkManager networkManager,
-        string socketId, Vector3 posTo, Quaternion rotation, int movementType) :
+        string socketId, Vector3 posTo, int movementType) :
         base(socket, networkManager, "PlayerMove") {
 
         data["socketId"] = socketId;
@@ -26,11 +25,6 @@ class MovePlayerBuilder : PacketBuilder {
         data["locationToX"] = PacketUtils.ToPacketString(posTo.x);
         data["locationToY"] = PacketUtils.ToPacketString(posTo.y);
         data["locationToZ"] = PacketUtils.ToPacketString(posTo.z);
-
-        data["headRotationX"] = PacketUtils.ToPacketString(rotation.x);
-        data["headRotationY"] = PacketUtils.ToPacketString(rotation.y);
-        data["headRotationZ"] = PacketUtils.ToPacketString(rotation.z);
-        data["headRotationW"] = PacketUtils.ToPacketString(rotation.w);
 
         Send();
     }

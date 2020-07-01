@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 public class PlayerMovement : MonoBehaviour {
 
@@ -9,7 +10,7 @@ public class PlayerMovement : MonoBehaviour {
      * It handles all movement input.
      */
 
-    public delegate void LocalPlayerMoveEvent(Vector3 destination, Quaternion headRotation, MovementType movementType);
+    public delegate void LocalPlayerMoveEvent(Vector3 destination, MovementType movementType);
     public static event LocalPlayerMoveEvent localPlayerMoveEvent;
 
     [SerializeField] private LocalBodyObjects localBodyObjects;
@@ -22,18 +23,23 @@ public class PlayerMovement : MonoBehaviour {
     private bool isGrounded = false;
     private bool jumping = false;
     private bool isSprinting = false;
-    private MovementType movemenType = MovementType.IDLE;
+    private bool isCrouching = false;
+    private MovementType movementType = MovementType.IDLE;
+    private Vector3 positionLastFrame = new Vector3(0, 0);
 
     [SerializeField] private PlayerAudio playerAudio;
+    [SerializeField] private PlayerTypes playerType;
 
     [SerializeField] private Transform groundCheck;
-    [SerializeField] private float groundDistance = 0.4f;
+    [SerializeField] private float groundDistance = 2.5f;
     [SerializeField] private LayerMask groundMask;
 
-    [SerializeField] private float normalSpeed = 2f;
-    [SerializeField] private float sprintSpeed = 5f;
-    [SerializeField] private float gravity = -9.18f;
-    [SerializeField] private float jumpHeight = 2f;
+    [SerializeField] private float crouchSpeed = 5f;
+    [SerializeField] private float normalSpeed = 20f;
+    [SerializeField] private float sprintSpeed = 50f;
+    [SerializeField] private float gravity = -90f;
+    [SerializeField] private float jumpHeight = 12f;
+    [SerializeField] private float crouchCameraShift = 0.4f;
 
     private void Awake() {
         controls = new InputHandler();
@@ -44,9 +50,25 @@ public class PlayerMovement : MonoBehaviour {
         controls.movement.Sprint.performed += ctx => isSprinting = true;
         controls.movement.Sprint.canceled += ctx => isSprinting = false;
 
+        controls.movement.Crouch.performed += ctx => {
+            isCrouching = true;
+
+            //Shift the camera down a bit for good player feedback
+            localBodyObjects.cameraHolder.localPosition += new Vector3(0, -crouchCameraShift);
+        };
+
+        controls.movement.Crouch.canceled += ctx => {
+            isCrouching = false;
+
+            //Set the camera back to it's normal position
+            localBodyObjects.cameraHolder.localPosition += new Vector3(0, crouchCameraShift);
+        };
+
         character = this.GetComponent<CharacterController>();
         //We can't do anything without a rigidbody, so just disable this object when we can't find it :P
         this.enabled = character;
+
+        PauseMenu.pauseEvent += Pause;
     }
 
     private void OnEnable() {
@@ -55,6 +77,14 @@ public class PlayerMovement : MonoBehaviour {
 
     private void OnDisable() {
         controls.movement.Disable();
+        PauseMenu.pauseEvent -= Pause;
+    }
+
+    private void Pause(bool pause) {
+        if(pause)
+            controls.movement.Disable();
+        else
+            controls.movement.Enable();
     }
 
     private void Update() {
@@ -62,8 +92,6 @@ public class PlayerMovement : MonoBehaviour {
 
         if (direction != new Vector2())
             Move();
-        else
-            movemenType = MovementType.IDLE;
 
         if (jumping)
             Jump();
@@ -77,8 +105,19 @@ public class PlayerMovement : MonoBehaviour {
 
         character.Move(velocity * Time.deltaTime);
 
-        if(localPlayerMoveEvent != null)
-            localPlayerMoveEvent(transform.position, localBodyObjects.head.rotation, movemenType);
+        if(positionLastFrame != this.transform.position) {
+            positionLastFrame = this.transform.position;
+            if (localPlayerMoveEvent != null)
+                localPlayerMoveEvent(transform.position, movementType);
+        } else if(movementType != MovementType.IDLE && !isCrouching) {
+            movementType = MovementType.IDLE;
+            if(localPlayerMoveEvent != null)
+                localPlayerMoveEvent(transform.position, movementType);
+        } else if(isCrouching && movementType != MovementType.CROUCHING_IDLE) {
+            movementType = MovementType.CROUCHING_IDLE;
+            if (localPlayerMoveEvent != null)
+                localPlayerMoveEvent(transform.position, movementType);
+        }
     }
 
     private void Move() {
@@ -86,23 +125,38 @@ public class PlayerMovement : MonoBehaviour {
         direction3d = transform.right * direction3d.x + transform.forward * direction3d.z;
 
         float speed = normalSpeed;
-        if (isSprinting)
+
+        if (isCrouching) {
+            speed = crouchSpeed;
+        } else if (isSprinting && direction.y > 0) {
             speed = sprintSpeed;
+        }
 
         character.Move(direction3d * speed * Time.deltaTime);
 
         //Audio
+        if(direction.y < 0 && !isCrouching) {
+            movementType = MovementType.BACKWARDS_WALKING;
+            playerAudio.Walk(PlayerAudioType.GetWalkByPlayerType(this.playerType));
+            return;
+        }
+
         if (speed == normalSpeed) {
-            movemenType = MovementType.WALKING;
-            playerAudio.Walk(PlayerAudioType.WALK_AUDIO_CONCRETE);
-        } else {
-            movemenType = MovementType.RUNNING;
-            playerAudio.Walk(PlayerAudioType.RUN_AUDIO_CONCRETE);
+            movementType = MovementType.WALKING;
+            playerAudio.Walk(PlayerAudioType.GetWalkByPlayerType(this.playerType));
+        } else if(isSprinting) {
+            movementType = MovementType.RUNNING;
+            playerAudio.Walk(PlayerAudioType.GetRunByPlayerType(this.playerType));
+        } else if(isCrouching) {
+            movementType = MovementType.CROUCHING_WALK;
         }
     }
 
     private void Jump() {
-        if (isGrounded)
+        if (isGrounded) {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            movementType = MovementType.JUMPING;
+            playerAudio.Jump(PlayerAudioType.GetJumpByPlayerType(this.playerType));
+        }
     }
 }
