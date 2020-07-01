@@ -1,5 +1,7 @@
 # NachtKratzen
 
+[GameJolt](https://gamejolt.com/games/nachtkratzen/506322) | [Trailer](https://www.youtube.com/watch?v=C9tr8QLu5vs) | [Werkproces](https://www.youtube.com/watch?v=iIfb1L9gjZ4&t=16s)
+
 ## Project team
 
 Development:
@@ -26,6 +28,10 @@ NachtKratzen is een multiplayer hide & seek game gebasseerd op de mythe van de [
 In dit spel speelt 1 van de spelers als een nachtkrabb, de andere spelers zijn kinderen die zich dus moeten verstoppen voor dit monster.
 Wanneer je als kind word gevonden ben je dus af, als je de nacht overleeft heb je als kind zeinde gewonnen.
 De kinderen mogen ook niet naar de nachtkrabb kijken want dan krijgt hij daar een indicatie van in zijn of haar scherm.
+
+![Game in werking](http://maclout.com/nachtkratzen/Nachtkratzengameplay.gif)
+
+_Een gif van ons spel in werking!_
 
 ## Scrum
 Tijdens dit project houden wij ons aan de scrum methode, hiervoor hebben wij deze github repo gebruikt en onze trello pagina. We houden ook een logboek bij.
