@@ -8,7 +8,6 @@ Development:
 
   - [Stanley Dam](https://github.com/Stanley-Dam)
   - [Kevin Bank](https://github.com/KevinBank)
-  - [Kevin Crans](https://github.com/kevincrans)
   
 Art:
 
