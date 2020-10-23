@@ -4,6 +4,11 @@ function PlayerMoveHeadHandler(server, data) {
     if(player == null)
         return;
 
+    player.bodyRotationX = data.bodyRotationX;
+    player.bodyRotationY = data.bodyRotationY;
+    player.bodyRotationZ = data.bodyRotationZ;
+    player.bodyRotationW = data.bodyRotationW;
+
     player.headRotationX = data.headRotationX;
     player.headRotationY = data.headRotationY;
     player.headRotationZ = data.headRotationZ;

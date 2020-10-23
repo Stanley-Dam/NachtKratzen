@@ -1,3 +1,5 @@
+const HiderCountSync = require('../packets/HiderCountSync.js');
+
 function PlayerDeathHandler(server, socket) {
     var player = server.GetPlayerById(socket.clientId);
 
@@ -9,6 +11,8 @@ function PlayerDeathHandler(server, socket) {
             server.hiders.splice(server.hiders.indexOf(player), 1);
         }
     }
+
+    server.BroadCastToClients('HiderCountSync', new HiderCountSync(server.hiders.length));
 
     server.BroadCastToClients('PlayerDeath', socket);
     console.log(player.clientId + " Died (Server: " + server.port + ")");

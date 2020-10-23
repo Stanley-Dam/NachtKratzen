@@ -4,7 +4,9 @@ const JoinPacketHandler = require('../packetHandlers/PlayerJoinHandler.js');
 const QuitPacketHandler = require('../packetHandlers/PlayerQuitHandler.js');
 const MovePacketHandler = require('../packetHandlers/PlayerMoveHandler.js');
 const PlayerDeathHandler = require('../packetHandlers/PlayerDeathHandler.js');
+const PropMoveHandler = require('../packetHandlers/PropMoveHandler.js');
 const PlayerMoveHeadHandler = require('../packetHandlers/PlayerMoveHeadHandler.js');
+const PlayerSeesSeeker = require('../packetHandlers/PlayerSeesSeeker.js');
 
 const ServerClose = require('../packets/ServerClose.js');
 
@@ -19,6 +21,7 @@ class Server {
         this.proxy = proxy;
         this.serverId = serverId;
         this.connectedPlayers = [];
+        this.props = [];
         this.port = port;
 
         this.isEnabled = true;
@@ -54,6 +57,14 @@ class Server {
 
             socket.on('PlayerDeath', function(data) {
                 PlayerDeathHandler(server, data);
+            });
+
+            socket.on('PlayerSeesSeeker', function(data) {
+                PlayerSeesSeeker(server, data);
+            });
+
+            socket.on('PropMove', function(data) {
+                PropMoveHandler(server, data);
             });
 
             /* Playerquit & disconnect do the same thing :P
@@ -99,6 +110,13 @@ class Server {
         for(var i = 0; i < this.connectedPlayers.length; i++) {
             if(this.connectedPlayers[i].clientId == clientId)
                 return this.connectedPlayers[i];
+        }
+    }
+
+    GetPropById(objectId) {
+        for(var i = 0; i < this.props.length; i++) {
+            if(this.props[i].objectId == objectId)
+                return this.props[i];
         }
     }
 

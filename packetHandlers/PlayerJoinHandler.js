@@ -1,4 +1,5 @@
 const Player = require('../obj/Player.js');
+const HiderCountSync = require('../packets/HiderCountSync.js');
 const fs = require('fs');
 
 /**
@@ -15,11 +16,15 @@ function PlayerJoinHandler(server, socket) {
     var content = fs.readFileSync('./data/LobbyLocation.json');
     var spawnPoint = JSON.parse(content);
 
-    var newPlayer = new Player(socket.id, spawnPoint.x, spawnPoint.y, spawnPoint.z, spawnPoint.headRotationX, spawnPoint.headRotationY, spawnPoint.headRotationZ, spawnPoint.headRotationW);
+    var newPlayer = new Player(socket.id, spawnPoint.x, spawnPoint.y, spawnPoint.z, spawnPoint.headRotationX, spawnPoint.headRotationY, spawnPoint.headRotationZ, spawnPoint.headRotationW, spawnPoint.headRotationX, spawnPoint.headRotationY, spawnPoint.headRotationZ, spawnPoint.headRotationW);
 
     //We need to send the new player all the other players! Otherwise he will be alone forever!!
     server.connectedPlayers.forEach(player => {
         socket.emit('PlayerJoin', player.GetJoinPacket());
+    });
+
+    server.props.forEach(prop => {
+        socket.emit('PropMove', prop.GetPropMovePacket());
     });
 
     //When the player is the first one in the server
@@ -28,6 +33,7 @@ function PlayerJoinHandler(server, socket) {
 
     server.BroadCastToClients('PlayerJoin', newPlayer.GetJoinPacket());
     server.connectedPlayers.push(newPlayer);
+    server.BroadCastToClients('HiderCountSync', new HiderCountSync(server.connectedPlayers.length));
     console.log(newPlayer.clientId + " Joined the game (Server: " + server.port + ")");
 }
 

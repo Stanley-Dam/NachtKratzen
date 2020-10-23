@@ -5,11 +5,18 @@ const JoinPacket = require('../packets/JoinPacket.js');
  * We can use this data to sync new players and to eventually even make a little anti-cheat :)
  */
 class Player {
-    constructor(clientId, x, y, z, headRotationX, headRotationY, headRotationZ, headRotationW) {
+    constructor(clientId, x, y, z, bodyRotationX, bodyRotationY, bodyRotationZ, bodyRotationW, headRotationX, headRotationY, headRotationZ, headRotationW) {
         this.clientId = clientId;
+
         this.x = x;
         this.y = y;
         this.z = z;
+
+        this.bodyRotationX = bodyRotationX;
+        this.bodyRotationY = bodyRotationY;
+        this.bodyRotationZ = bodyRotationZ;
+        this.bodyRotationW = bodyRotationW;
+
         this.headRotationX = headRotationX;
         this.headRotationY = headRotationY;
         this.headRotationZ = headRotationZ;

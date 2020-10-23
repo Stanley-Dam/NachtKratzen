@@ -13,6 +13,8 @@ const PlayerMessage = require('../packets/PlayerMessage.js');
 const PlayerTeleport = require('../packets/PlayerTeleport.js');
 const UpdateSeeker = require('../packets/UpdateSeeker.js');
 const SyncDayNightCycle = require('../packets/SyncDayNightCycle.js');
+const TimeLeftSync = require('../packets/TimeLeftSync.js');
+const HiderCountSync = require('../packets/HiderCountSync.js');
 
 const Stages = require('../data/Stages.js');
 const MessageTypes = require('../data/MessageTypes.js');
@@ -71,6 +73,8 @@ class GameLoop {
                     
                     this.gameStage = Stages.STARTING;
                     this.clock = 0;
+
+                    this.server.BroadCastToClients('TimeLeftSync', new TimeLeftSync(20));
                 }
                 break;
             case Stages.STARTING:
@@ -79,6 +83,7 @@ class GameLoop {
                     this.gameStage = Stages.WAITING_FOR_PLAYERS;
                     //Let's also give the players a heads up :)
                     this.server.BroadCastToClients('PlayerMessage', new PlayerMessage(MessageTypes.SAD_NEWS, Language.PLAYER_LEFT_SERVER_CANCELED));
+                    this.server.BroadCastToClients('TimeLeftSync', new TimeLeftSync(0));
                     break;
                 }
 
@@ -92,8 +97,10 @@ class GameLoop {
                     this.server.gameStarted = true;
                     this.PickSeeker();
                     this.TeleportPlayers(0);
+                    this.server.BroadCastToClients('HiderCountSync', new HiderCountSync(this.server.hiders.length));
                     this.server.BroadCastToClients('SyncDayNightCycle', new SyncDayNightCycle(dayNightCycleData.hidersReleaseTime, dayNightCycleData.secondsPerSecond));
                     this.server.MessageToClients('StartDayNightCycle');
+                    this.server.BroadCastToClients('TimeLeftSync', new TimeLeftSync(30));
                     break;
                 }
 
@@ -106,6 +113,7 @@ class GameLoop {
                     this.gameStage = Stages.END;
                     //Let's also give the players a heads up :)
                     this.server.BroadCastToClients('PlayerMessage', new PlayerMessage(MessageTypes.SAD_NEWS, Language.PLAYER_LEFT_SERVER_CANCELED));
+                    this.server.BroadCastToClients('TimeLeftSync', new TimeLeftSync(10));
                     break;
                 }
 
@@ -119,6 +127,7 @@ class GameLoop {
                     this.TeleportPlayers(1);
                     this.server.BroadCastToClients('SyncDayNightCycle', new SyncDayNightCycle(dayNightCycleData.gameStartTime, dayNightCycleData.secondsPerSecond));
                     this.server.MessageToClients('StartDayNightCycle');
+                    this.server.BroadCastToClients('TimeLeftSync', new TimeLeftSync(300));
                     break;
                 }
 
@@ -136,6 +145,7 @@ class GameLoop {
                     this.server.BroadCastToClients('PlayerMessage', new PlayerMessage(MessageTypes.HAPPY_NEWS, Language.HIDERS_WIN));
                     this.gameStage = Stages.END;
                     this.clock = 0;
+                    this.server.BroadCastToClients('TimeLeftSync', new TimeLeftSync(10));
                     break;
                 }
 
@@ -146,6 +156,7 @@ class GameLoop {
                     this.server.BroadCastToClients('PlayerMessage', new PlayerMessage(MessageTypes.SPOOKY_NEWS, Language.SEEKER_WINS));
                     this.gameStage = Stages.END;
                     this.clock = 0;
+                    this.server.BroadCastToClients('TimeLeftSync', new TimeLeftSync(10));
                     break;
                 }
                 break;
@@ -182,7 +193,7 @@ class GameLoop {
         var flooredTime = Math.floor(time);
         var doBroadCast = false;
 
-        if((flooredTime % 10 == 0 || flooredTime <= 5) && flooredTime != this.lastTimeMileStone)
+        if((flooredTime % 10 == 0 || (flooredTime <= 5 && flooredTime > 0)) && flooredTime != this.lastTimeMileStone)
             doBroadCast = true;
 
         if(doBroadCast) {
